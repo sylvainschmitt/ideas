@@ -1,4 +1,4 @@
-name: dev-dc
+name: dev-ideas
 channels:
   - conda-forge
 dependencies:
@@ -26,3 +26,5 @@ dependencies:
   - salem
   - gcsfs
   - zarr
+  - earthengine-api
+  - xee
