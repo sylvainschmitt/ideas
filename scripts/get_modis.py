@@ -55,9 +55,9 @@ ds2["LST_Day_1km"].values = ds2["LST_Day_1km"].values * 0.02 - 273.15 # scale fa
 # indices
 ds_tas = ds2.sel(year=slice(2015, 2020)).mean("year") - ds2.sel(year=slice(2001, 2006)).mean("year")
 ds_tas = ds_tas.rename({"LST_Day_1km": "tas"})
-ds_tasmin = ds2.sel(year=slice(2018, 2020)).min("year") - ds2.sel(year=slice(2001, 2003)).min("year")
+ds_tasmin = ds2.sel(year=slice(2015, 2020)).min("year") - ds2.sel(year=slice(2001, 2003)).min("year")
 ds_tasmin = ds_tasmin.rename({"LST_Day_1km": "tasmin"})
-ds_tasmax = ds2.sel(year=slice(2018, 2020)).max("year") - ds2.sel(year=slice(2001, 2003)).max("year")
+ds_tasmax = ds2.sel(year=slice(2015, 2020)).max("year") - ds2.sel(year=slice(2001, 2003)).max("year")
 ds_tasmax = ds_tasmax.rename({"LST_Day_1km": "tasmax"})
 ds_all = xr.merge([ds_tas, ds_tasmax, ds_tasmin])
 

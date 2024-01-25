@@ -10,6 +10,7 @@ book:
     - index.qmd
     - landuse.qmd
     - temperature.qmd
+    - precipitation.qmd
   appendices:
     - literature.qmd
     - meetings.qmd
