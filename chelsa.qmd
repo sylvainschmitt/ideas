@@ -111,46 +111,16 @@ chirps %>%
 ```
 
 ```{r}
-chirps %>% 
-  filter(month(time) == 1) %>% 
-  group_by(year = year(time)) %>% 
-  mutate(anomaly = precipitation - mean(precipitation)) %>% 
-  group_by(x, y) %>% 
-  summarise(anomaly = mean(anomaly)) %>% 
-  ggplot(aes(x, y, fill = anomaly)) +
-  geom_raster() +
-  theme_void() +
-  coord_equal() +
-  scale_fill_viridis_c("Mean january\nanomaly (mm)")
-```
-
-```{r}
-chirps %>% 
+anom_r <- chirps %>% 
   group_by(x, y, year = year(time)) %>% 
   summarise(precipitation = sum(precipitation)) %>% 
   group_by(year) %>% 
   mutate(anomaly = precipitation - mean(precipitation)) %>% 
   group_by(x, y) %>% 
   summarise(anomaly = mean(anomaly)) %>% 
-  ggplot(aes(x, y, fill = anomaly)) +
-  geom_raster() +
-  theme_void() +
-  coord_equal() +
-  scale_fill_viridis_c() +
-  scale_fill_viridis_c("Mean annual\nanomaly (mm)")
-```
-
-```{r}
-anom <- chirps %>% 
-  group_by(x, y, year = year(time)) %>% 
-  summarise(precipitation = sum(precipitation)) %>% 
-  group_by(year) %>% 
-  mutate(anomaly = precipitation - mean(precipitation)) %>% 
-  group_by(x, y) %>% 
-  summarise(anomaly = mean(anomaly)) 
-anom_r <- chirps_r[[1]]
-values(anom_r) <- anom$anomaly
-pal <- colorNumeric(c("red", "#FFFFCC", "#0C2C84"), values(anom_r), na.color = "transparent")
+  rast()
+crs(anom_r) <- crs(chirps_r)
+pal <- colorNumeric(c("#0C2C84", "#FFFFCC", "red"), values(anom_r), na.color = "transparent")
 leaflet() %>% 
   addTiles() %>%
   addRasterImage(anom_r, colors = pal, opacity = 0.6) %>% 

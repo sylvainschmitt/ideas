@@ -1,2 +1,3 @@
+-   ideas 0.1.0.9003: fixed leaflet rasters
 -   ideas 0.1.0.9002: get chirps, chelsa, tmf, modis
 -   ideas 0.1.0.9001: init
