@@ -2,7 +2,7 @@ rule get_modis:
     input:
         "data/{area}/{area}.shp"
     output:
-        "results/data/modis_{area}.nc",
+        "results/data/modis_{area}.nc"
     log:
         "results/logs/get_modis_{area}.log"
     benchmark:

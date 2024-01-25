@@ -28,3 +28,5 @@ dependencies:
   - zarr
   - earthengine-api
   - xee
+  - s3fs
+  - botocore

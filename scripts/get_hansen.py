@@ -8,7 +8,7 @@ fileout = snakemake.output[0]
 
 # test
 filein = "data/guaviare/guaviare.shp"
-fileout = "results/data/tmf_guaviare.nc"
+fileout = "results/data/hansen_guaviare.nc"
 
 # libs
 import geopandas as gp
@@ -32,10 +32,12 @@ ds_out = xr.Dataset(
 
 # get
 ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
-ds = xr.open_dataset("projects/JRC/TMF/v1_2020/AnnualChanges", engine='ee')
-ds_all = ds[["Dec2001"]]
+ee.Image("UMD/hansen/global_forest_change_2022_v1_10")
+i = ee.ImageCollection(ee.Image("UMD/hansen/global_forest_change_2022_v1_10"))
+ds = xr.open_dataset(i, engine='ee')
+ds = ds[["loss"]]
 
-# regid
-regridder = xe.Regridder(ds_all, ds_out, "bilinear")
-ds_r = regridder(ds_all, keep_attrs=True)
+# indices
+regridder = xe.Regridder(ds, ds_out, "bilinear")
+ds_r = regridder(ds, keep_attrs=True)
 ds_r.to_netcdf(fileout)

@@ -42,4 +42,3 @@ ds = ds[["time", "x", "y", "pr"]]
 ds["pr"].values = ds["pr"].values * 0.01
 ds.pr.attrs = {'standard_name': 'precipitation', 'long_name': 'Monthly precipitation', 'units': 'mm month-1', 'explanation' : 'Precipitation" in the earth\'s atmosphere means precipitation of water in all phases.'}
 ds.chunk({'time':1, 'x':200, 'y':200}).to_netcdf(chelsa_file)
-              tmf

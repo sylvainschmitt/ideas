@@ -8,11 +8,8 @@ book:
   date: last-modified
   chapters:
     - index.qmd
-    - areas.qmd
-    - chirps.qmd
-    - chelsa.qmd
-    - tmf.qmd
-    - modis.qmd
+    - landuse.qmd
+    - temperature.qmd
   appendices:
     - literature.qmd
     - meetings.qmd

@@ -1,3 +1,31 @@
 # Introduction {.unnumbered}
 
 My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Guaviare.
+
+## Sutdy areas
+
+```{r setup}
+#| include: false
+rm(list = ls()) ; invisible(gc()) ; set.seed(42)
+library(tidyverse)
+library(terra)
+library(sf)
+library(leaflet)
+theme_set(bayesplot::theme_default())
+knitr::opts_chunk$set(
+  echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
+  cache = T, cache.lazy = F)
+```
+
+```{r data}
+#| include: false
+capricho <- st_read("data/capricho/capricho.shp")
+guaviare <- st_read("data/guaviare/guaviare.shp")
+```
+
+```{r plotnc}
+leaflet() %>% 
+  addTiles() %>%
+  addPolygons(data = guaviare) %>% 
+  addPolygons(data = capricho, col = "red")
+```
