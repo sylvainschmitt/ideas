@@ -1,4 +1,4 @@
-# Precipitation {.unnumbered}
+# VPD {.unnumbered}
 
 ```{r setup}
 #| include: false
@@ -13,7 +13,9 @@ knitr::opts_chunk$set(
   cache = T, cache.lazy = F)
 ```
 
-This chapter doest not identify any trend in monthly precipitation in Guiavare with forest cover changes. The analysis of variance suggested higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust to spatial autocorrelation as the LRSRE revealed only null effects, suggesting that spatial autocorrelation explains all observed patterns. The differences might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia. Further directions include using other territories to try having a signal.
+According to @dasilva2024, we cannot use ERA5 Land reanalysis incapable of representing soil-plant-atmosphere interaction processes in mesoscale interannual scale. Available ground data for Brazil: @xavier2022.
+
+...
 
 ## Method
 
@@ -24,10 +26,10 @@ We used the Tropical Moist Forest (TMF) product from the European Joint Research
 ```{r tmfdata}
 #| include: false
 area <- st_read("data/guaviare/guaviare.shp", quiet=T)
-precip_r <- rast("results/data/chirps_guaviare.nc")
+temp_r <- rast("results/data/modis_guaviare.nc")
 tmf_2001 <- rast("data/JRC_TMF_AnnualChange_v1_SAM_ID47_N10_W80/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2001_SAM_ID47_N10_W80.tif") %>% crop(area)
 msk <- ifel(tmf_2001 != 1, NA, 1)
-tmf_2020 <- rast("data/JRC_TMF_AnnualChange_v1_SAM_ID47_N10_W80/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2020_SAM_ID47_N10_W80.tif") %>% crop(area) %>% mask(msk) %>% as.factor() %>% resample(precip_r)
+tmf_2020 <- rast("data/JRC_TMF_AnnualChange_v1_SAM_ID47_N10_W80/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2020_SAM_ID47_N10_W80.tif") %>% crop(area) %>% mask(msk) %>% as.factor() %>% resample(temp_r)
 tmf_2020 <- as.factor(ifel(tmf_2020 %in% 1:3, tmf_2020, NA))
 ```
 
@@ -41,27 +43,24 @@ ggplot() +
           "2020 versus 2001 from JRC TMF")
 ```
 
-### Precipitation
+### VPD
 
-We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=\~74 thousands pixels (1 km^2^ in extent) over the Guiavare region.
+...
 
-```{r prplot}
+```{r vpdplot}
 area <- st_read("data/guaviare/guaviare.shp", quiet=T)
-precip_r <- rast("results/data/chirps_guaviare.nc")
+temp_r <- rast("results/data/era_vpd_guaviare.nc")
 ggplot() +
-  tidyterra::geom_spatraster(data = precip_r[[1]]) +
+  tidyterra::geom_spatraster(data = temp_r) +
   theme_bw() +
-  scale_fill_viridis_c(expression(delta~pr)) +
+  scale_fill_viridis_c(expression(delta~VPD)) +
   geom_sf(data = area, fill = NA, linewidth = 2) +
-  ggtitle("Guiavare January Precipitation variations", 
-          "2015-2020 versus 2001-2006 from CHIRPS")
+  ggtitle("Guiavare January mean VPD variation", 
+          "2015-2020 versus 2001-2006")
 ```
 
-```{r prdata}
-data <- as.data.frame(precip_r, xy = T) %>% 
-  gather(variable, precipitation, -x, -y) %>% 
-  separate(variable, c("X1", "X2", "month"), convert = T) %>% 
-  select(-X1, -X2) %>% 
+```{r vpddata}
+data <- as.data.frame(temp_r, xy = T) %>% 
   left_join(as.data.frame(tmf_2020, xy = T)) %>% 
   na.omit() %>% 
   mutate(type = recode(as.character(Dec2020),
@@ -72,36 +71,31 @@ data <- as.data.frame(precip_r, xy = T) %>%
 
 ### Analysis
 
-For each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran's coefficients for 20 distance classes.
+For each variable we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran's coefficients for 20 distance classes.
 
 ## Results
 
 ### Analysis of variance (ANOVA)
 
-The ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).
+...
 
 ```{r anovaplot}
 data %>% 
-  ggplot(aes(type, precipitation, fill = type)) +
+  ggplot(aes(type, vpd, fill = type)) +
   geom_boxplot() +
   theme_bw() +
   ggpubr::stat_anova_test() +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
         axis.title = element_blank(),
         legend.position = "bottom") +
-  facet_wrap(~ month, scales = "free") +
   scale_fill_discrete("") +
-  ggtitle("Guiavare monthly precipitation variation per forest change")
+  ggtitle("Guiavare January VPD variation per forest change")
 ```
 
 ```{r tukey}
-data %>% 
-  split(data$month) %>% 
-  lapply(function(tab)
-    TukeyHSD(aov(precipitation ~ type, tab))$type %>% 
+TukeyHSD(aov(vpd ~ type, data))$type %>% 
                            as.data.frame() %>% 
-                           rownames_to_column("comp")) %>% 
-  bind_rows(.id = "month") %>% 
+                           rownames_to_column("comp") %>% 
   ggplot(aes(comp, diff, col = `p adj` <= 0.05)) +
   geom_point() +
   geom_segment(aes(xend = comp, y = lwr, yend = upr)) +
@@ -109,14 +103,12 @@ data %>%
   coord_flip() +
   geom_vline(xintercept = 0) +
   theme(axis.title = element_blank(), legend.position = "bottom") +
-  facet_wrap(~ month, scales = "free_x") +
   ggtitle("Tukey honest significant difference tests")
 ```
 
 ```{r anovacor}
-data2 <- filter(data, month == 1)
-data2$res_tas <- residuals(aov(precipitation ~ type, data2))
-data2 <- sample_n(data2, 1000)
+data$res_tas <- residuals(aov(vpd ~ type, data))
+data2 <- sample_n(data, 1000)
 cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res_tas,
                    method = "Moran", nbclass = 20) %>% 
     as.data.frame()
@@ -133,18 +125,18 @@ cor %>%
 
 <!--# https://hughst.github.io/week-6/ -->
 
-The LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns.
+...
 
 ```{r spammfit}
 #| include: false
 #| eval: false
-m <- spaMM::fitme(precipitation ~ type + Matern(1|y+x), data2)
+m <- spaMM::fitme(vpd ~ type + Matern(1|y+x), data2)
 tab <- summary(m)$beta_table
-save(m, tab, file = "save/precipitation.Rdata")
+save(m, tab, file = "save/vpd.Rdata")
 ```
 
 ```{r spammplot}
-load("save/precipitation.Rdata")
+load("save/vpd.Rdata")
 as.data.frame(tab) %>% 
   rename(estimate = "Estimate", se = "Cond. SE", t = "t-value") %>% 
   mutate(lower = estimate - 1.96*se, upper = estimate + 1.96*se) %>% 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>IDEAS - Precipitation</title>
+<title>IDEAS - VPD</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,7 +20,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -30,8 +49,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./evapotranspiration.html" rel="next">
-<link href="./temperature.html" rel="prev">
+<link href="./literature.html" rel="next">
+<link href="./evapotranspiration.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +93,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./precipitation.html">Precipitation</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./vpd.html">VPD</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -113,7 +132,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./precipitation.html" class="sidebar-item-text sidebar-link active">
+  <a href="./precipitation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Precipitation</span></a>
   </div>
 </li>
@@ -125,7 +144,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vpd.html" class="sidebar-item-text sidebar-link">
+  <a href="./vpd.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">VPD</span></a>
   </div>
 </li>
@@ -171,7 +190,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#method" id="toc-method" class="nav-link active" data-scroll-target="#method">Method</a>
   <ul class="collapse">
   <li><a href="#forest-change" id="toc-forest-change" class="nav-link" data-scroll-target="#forest-change">Forest change</a></li>
-  <li><a href="#precipitation" id="toc-precipitation" class="nav-link" data-scroll-target="#precipitation">Precipitation</a></li>
+  <li><a href="#vpd" id="toc-vpd" class="nav-link" data-scroll-target="#vpd">VPD</a></li>
   <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
@@ -187,7 +206,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Precipitation</h1>
+<h1 class="title">VPD</h1>
 </div>
 
 
@@ -202,69 +221,78 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>This chapter doest not identify any trend in monthly precipitation in Guiavare with forest cover changes. The analysis of variance suggested higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust to spatial autocorrelation as the LRSRE revealed only null effects, suggesting that spatial autocorrelation explains all observed patterns. The differences might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia. Further directions include using other territories to try having a signal.</p>
+<p>According to <span class="citation" data-cites="dasilva2024">Silva et al. (<a href="references.html#ref-dasilva2024" role="doc-biblioref">2024</a>)</span>, we cannot use ERA5 Land reanalysis incapable of representing soil-plant-atmosphere interaction processes in mesoscale interannual scale. Available ground data for Brazil: <span class="citation" data-cites="xavier2022">Xavier et al. (<a href="references.html#ref-xavier2022" role="doc-biblioref">2022</a>)</span>.</p>
+<p>…</p>
 <section id="method" class="level2">
 <h2 class="anchored" data-anchor-id="method">Method</h2>
 <section id="forest-change" class="level3">
 <h3 class="anchored" data-anchor-id="forest-change">Forest change</h3>
 <p>We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.</p>
-<div class="cell" data-hash="precipitation_cache/html/tmfplot_253cdb67e2768662f6ffa674fbedc80c">
+<div class="cell" data-hash="vpd_cache/html/tmfplot_4ce6de41ed388e161bff647dda1e4afd">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/tmfplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/tmfplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="precipitation" class="level3">
-<h3 class="anchored" data-anchor-id="precipitation">Precipitation</h3>
-<p>We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
-<div class="cell" data-hash="precipitation_cache/html/prplot_7f17998c3c525e1338795cf0b0942739">
+<section id="vpd" class="level3">
+<h3 class="anchored" data-anchor-id="vpd">VPD</h3>
+<p>…</p>
+<div class="cell" data-hash="vpd_cache/html/vpdplot_e6ec16407611e4b9b2548befd224ea19">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/prplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/vpdplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="analysis" class="level3">
 <h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
-<p>For each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes.</p>
+<p>For each variable we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes.</p>
 </section>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <section id="analysis-of-variance-anova" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of variance (ANOVA)</h3>
-<p>The ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).</p>
-<div class="cell" data-hash="precipitation_cache/html/anovaplot_1e1a1bb0087046fb55a84860a6a7f545">
+<p>…</p>
+<div class="cell" data-hash="vpd_cache/html/anovaplot_3cd74958090061c9738c827585403966">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/anovaplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/anovaplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/tukey_f675f75f5392a95fff1a49901e73e473">
+<div class="cell" data-hash="vpd_cache/html/tukey_8939aaed5542c1b94934b83bae3b378f">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/tukey-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/tukey-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/anovacor_ec97b7b28ea7aae863aa7d6ebf7d7621">
+<div class="cell" data-hash="vpd_cache/html/anovacor_4bbf62c0f5ee28f7f116545c3719357e">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/anovacor-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/anovacor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="linear-regression-with-spatial-random-effect-lrsre" class="level3">
 <h3 class="anchored" data-anchor-id="linear-regression-with-spatial-random-effect-lrsre">Linear regression with spatial random effect (LRSRE)</h3>
 <!--# https://hughst.github.io/week-6/ -->
-<p>The LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns.</p>
-<div class="cell" data-hash="precipitation_cache/html/spammplot_2b64ac39410b315e4666a727dbc6ffc3">
+<p>…</p>
+<div class="cell" data-hash="vpd_cache/html/spammplot_9ad611b51e8c644481d979a6103fe024">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/spammplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/spammplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/spammcor_21a6c54dd8e43d803166661926567792">
+<div class="cell" data-hash="vpd_cache/html/spammcor_cb0c42184dbde2a2b5cde84792a57ae9">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/spammcor-1.png" class="img-fluid" width="768"></p>
+<p><img src="vpd_files/figure-html/spammcor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-dasilva2024" class="csl-entry" role="listitem">
+Silva, Queren Priscila da, Demerval Soares Moreira, Helber Custódio de Freitas, and Leonardo Moreno Domingues. 2024. <span>“Discrepancies Between Observation and ERA5 Reanalysis in the Amazon Deforestation Context: A Case Study.”</span> <em>Dynamics of Atmospheres and Oceans</em>, January, 101442. <a href="https://doi.org/10.1016/j.dynatmoce.2024.101442">https://doi.org/10.1016/j.dynatmoce.2024.101442</a>.
+</div>
+<div id="ref-xavier2022" class="csl-entry" role="listitem">
+Xavier, Alexandre C., Bridget R. Scanlon, Carey W. King, and Aline I. Alves. 2022. <span>“New Improved Brazilian Daily Weather Gridded Data (1961<span></span>2020).”</span> <em>International Journal of Climatology</em> 42 (16): 8390–8404. <a href="https://doi.org/10.1002/joc.7731">https://doi.org/10.1002/joc.7731</a>.
+</div>
+</div>
 </section>
 </section>
 
@@ -504,13 +532,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./temperature.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Temperature</span>
+      <a href="./evapotranspiration.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Evapotranspiration</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./evapotranspiration.html" class="pagination-link">
-        <span class="nav-page-text">Evapotranspiration</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./literature.html" class="pagination-link">
+        <span class="nav-page-text">Literature</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>IDEAS - Precipitation</title>
+<title>IDEAS - Evapotranspiration</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./evapotranspiration.html" rel="next">
-<link href="./temperature.html" rel="prev">
+<link href="./vpd.html" rel="next">
+<link href="./precipitation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./precipitation.html">Precipitation</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./evapotranspiration.html">Evapotranspiration</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -113,13 +113,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./precipitation.html" class="sidebar-item-text sidebar-link active">
+  <a href="./precipitation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Precipitation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./evapotranspiration.html" class="sidebar-item-text sidebar-link">
+  <a href="./evapotranspiration.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Evapotranspiration</span></a>
   </div>
 </li>
@@ -171,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#method" id="toc-method" class="nav-link active" data-scroll-target="#method">Method</a>
   <ul class="collapse">
   <li><a href="#forest-change" id="toc-forest-change" class="nav-link" data-scroll-target="#forest-change">Forest change</a></li>
-  <li><a href="#precipitation" id="toc-precipitation" class="nav-link" data-scroll-target="#precipitation">Precipitation</a></li>
+  <li><a href="#evapotranspiration" id="toc-evapotranspiration" class="nav-link" data-scroll-target="#evapotranspiration">Evapotranspiration</a></li>
   <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
@@ -187,7 +187,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Precipitation</h1>
+<h1 class="title">Evapotranspiration</h1>
 </div>
 
 
@@ -202,65 +202,65 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>This chapter doest not identify any trend in monthly precipitation in Guiavare with forest cover changes. The analysis of variance suggested higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust to spatial autocorrelation as the LRSRE revealed only null effects, suggesting that spatial autocorrelation explains all observed patterns. The differences might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia. Further directions include using other territories to try having a signal.</p>
+<p>This chapter identify an increase in Januaryevapotranspiration in Guiavare on deforested (+1mm/8day [1-1]) an degraded (+0.5mm/8day [0.5-1]) lands compared to forest that remained undisturbed. However, due to the spatial structure of the deforestation arc, this result is not robust to spatial autocorrelation, with only non significant marked effect of deforested forest on evapotranspiration increase (+2mm/8day [-3-7]). Further directions include (1) using other territories for statistical robustness, and (2) using finer temporal indices such as extreme events.</p>
 <section id="method" class="level2">
 <h2 class="anchored" data-anchor-id="method">Method</h2>
 <section id="forest-change" class="level3">
 <h3 class="anchored" data-anchor-id="forest-change">Forest change</h3>
 <p>We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.</p>
-<div class="cell" data-hash="precipitation_cache/html/tmfplot_253cdb67e2768662f6ffa674fbedc80c">
+<div class="cell" data-hash="evapotranspiration_cache/html/tmfplot_f2f77a290fba508def4efa6b0d7939f5">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/tmfplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/tmfplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="precipitation" class="level3">
-<h3 class="anchored" data-anchor-id="precipitation">Precipitation</h3>
-<p>We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
-<div class="cell" data-hash="precipitation_cache/html/prplot_7f17998c3c525e1338795cf0b0942739">
+<section id="evapotranspiration" class="level3">
+<h3 class="anchored" data-anchor-id="evapotranspiration">Evapotranspiration</h3>
+<p>We used total evapotranspiration (ET) data from MOD16A2GF version 6.1 MODIS ET data downscaled at 0.01-degree resolution grid (originally 500-m). We kept only pixels with (1) only good quality (MODLAND), (2) on both Terra and Aqua sensors,(3) detectors fine for up to 50% of channels 1, 2, (4) without significant clouds, (5) and the main method used for best result possible (no saturation). Indeed, extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season evapotranspiration changes were then calculated by comparing evapotranspiration of the driest month for two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. We computed both variations in mean evapotranspiration (et), maximum evapotranspiration (etmax), and minimum evapotranspiration (etmin). As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
+<div class="cell" data-hash="evapotranspiration_cache/html/etplot_103f0f60c7de14e1f054dfd5a25409c8">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/prplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/etplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="analysis" class="level3">
 <h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
-<p>For each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes.</p>
+<p>For each variable we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes.</p>
 </section>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <section id="analysis-of-variance-anova" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of variance (ANOVA)</h3>
-<p>The ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).</p>
-<div class="cell" data-hash="precipitation_cache/html/anovaplot_1e1a1bb0087046fb55a84860a6a7f545">
+<p>The ANOVA and Tukey HSD tests revealed significantly higher evapotranspiration in deforested (+0.05°C [0.04-0.06]) an degraded (+0.03 [0.02-0.04]) lands compared to forest that remained undisturbed. But the autocorrelogram revealed significant positive spatial autocorrelation up to 100-km.</p>
+<div class="cell" data-hash="evapotranspiration_cache/html/anovaplot_f1d86d983c68e47dcfc5eb16797b0cc3">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/anovaplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/anovaplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/tukey_f675f75f5392a95fff1a49901e73e473">
+<div class="cell" data-hash="evapotranspiration_cache/html/tukey_a9f7c6db13a55e65c5d0af7ec4285593">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/tukey-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/tukey-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/anovacor_ec97b7b28ea7aae863aa7d6ebf7d7621">
+<div class="cell" data-hash="evapotranspiration_cache/html/anovacor_1630aa57c20ab1a9d4d3e74ec0b5b4b7">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/anovacor-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/anovacor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="linear-regression-with-spatial-random-effect-lrsre" class="level3">
 <h3 class="anchored" data-anchor-id="linear-regression-with-spatial-random-effect-lrsre">Linear regression with spatial random effect (LRSRE)</h3>
 <!--# https://hughst.github.io/week-6/ -->
-<p>The LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns.</p>
-<div class="cell" data-hash="precipitation_cache/html/spammplot_2b64ac39410b315e4666a727dbc6ffc3">
+<p>The LRSRE revealed only non significant marked effect of deforested forest on evapotranspiration increase (+2mm/8day [-3-7]).</p>
+<div class="cell" data-hash="evapotranspiration_cache/html/spammplot_a400fe0b592a97cde5f278f4e0dd0af6">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/spammplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/spammplot-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/spammcor_21a6c54dd8e43d803166661926567792">
+<div class="cell" data-hash="evapotranspiration_cache/html/spammcor_ee4b4a1780bad02e6f7aab8f6d6cba46">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/spammcor-1.png" class="img-fluid" width="768"></p>
+<p><img src="evapotranspiration_files/figure-html/spammcor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 
@@ -504,13 +504,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./temperature.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Temperature</span>
+      <a href="./precipitation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Precipitation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./evapotranspiration.html" class="pagination-link">
-        <span class="nav-page-text">Evapotranspiration</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./vpd.html" class="pagination-link">
+        <span class="nav-page-text">VPD</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -37,6 +37,7 @@ ds = xr.open_dataset("UCSB-CHG/CHIRPS/DAILY", engine='ee')
 ds_old = ds.sel(time=slice("2001-01-01", "2006-12-31")).resample(time="1MS").sum(dim="time").groupby("time.month").mean("time")
 ds_new = ds.sel(time=slice("2015-01-01", "2020-12-31")).resample(time="1MS").sum(dim="time").groupby("time.month").mean("time")
 ds_diff = ds_new - ds_old
+ds_diff = ds_diff.assign_attrs(ds.attrs)
 
 # indices
 regridder = xe.Regridder(ds_diff, ds_out, "bilinear")

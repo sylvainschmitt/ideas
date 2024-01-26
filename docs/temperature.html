@@ -136,6 +136,18 @@ div.csl-indent {
  <span class="menu-text">Precipitation</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./evapotranspiration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Evapotranspiration</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vpd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">VPD</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
@@ -223,7 +235,7 @@ div.csl-indent {
 </section>
 <section id="temperature" class="level3">
 <h3 class="anchored" data-anchor-id="temperature">Temperature</h3>
-<p>Following <span class="citation" data-cites="butt2023">Butt et al. (<a href="references.html#ref-butt2023" role="doc-biblioref">2023</a>)</span>, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid downloaded from (variable name: LST_Day_1km). We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. We computed both variations in mean temperature (tas), maximum temperature (tasmax), and minimum temperature (tasmin). As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
+<p>Following <span class="citation" data-cites="butt2023">Butt et al. (<a href="references.html#ref-butt2023" role="doc-biblioref">2023</a>)</span>, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. We computed both variations in mean temperature (tas), maximum temperature (tasmax), and minimum temperature (tasmin). As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
 <div class="cell" data-hash="temperature_cache/html/tempplot_4c71fba2c84adb3e04c88e1f3b10bf48">
 <div class="cell-output-display">
 <p><img src="temperature_files/figure-html/tempplot-1.png" class="img-fluid" width="768"></p>

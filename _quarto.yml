@@ -10,6 +10,8 @@ book:
     - index.qmd
     - temperature.qmd
     - precipitation.qmd
+    - evapotranspiration.qmd
+    - vpd.qmd
   appendices:
     - literature.qmd
     - meetings.qmd
