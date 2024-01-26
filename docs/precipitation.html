@@ -152,7 +152,23 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#method" id="toc-method" class="nav-link active" data-scroll-target="#method">Method</a>
+  <ul class="collapse">
+  <li><a href="#forest-change" id="toc-forest-change" class="nav-link" data-scroll-target="#forest-change">Forest change</a></li>
+  <li><a href="#precipitation" id="toc-precipitation" class="nav-link" data-scroll-target="#precipitation">Precipitation</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#analysis-of-variance-anova" id="toc-analysis-of-variance-anova" class="nav-link" data-scroll-target="#analysis-of-variance-anova">Analysis of variance (ANOVA)</a></li>
+  <li><a href="#linear-regression-with-spatial-random-effect-lrsre" id="toc-linear-regression-with-spatial-random-effect-lrsre" class="nav-link" data-scroll-target="#linear-regression-with-spatial-random-effect-lrsre">Linear regression with spatial random effect (LRSRE)</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -174,8 +190,71 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+<p>This chapter doest not identify any trend in monthly precipitation in Guiavare with forest cover changes. The analysis of variance suggested higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust to spatial autocorrelation as the LRSRE revealed only null effects, suggesting that spatial autocorrelation explains all observed patterns. The differences might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia. Further directions include using other territories to try having a signal.</p>
+<section id="method" class="level2">
+<h2 class="anchored" data-anchor-id="method">Method</h2>
+<section id="forest-change" class="level3">
+<h3 class="anchored" data-anchor-id="forest-change">Forest change</h3>
+<p>We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.</p>
+<div class="cell" data-hash="precipitation_cache/html/tmfplot_253cdb67e2768662f6ffa674fbedc80c">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/tmfplot-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="precipitation" class="level3">
+<h3 class="anchored" data-anchor-id="precipitation">Precipitation</h3>
+<p>We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
+<div class="cell" data-hash="precipitation_cache/html/prplot_7f17998c3c525e1338795cf0b0942739">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/prplot-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="analysis" class="level3">
+<h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
+<p>For each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes.</p>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="analysis-of-variance-anova" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of variance (ANOVA)</h3>
+<p>The ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).</p>
+<div class="cell" data-hash="precipitation_cache/html/anovaplot_1e1a1bb0087046fb55a84860a6a7f545">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/anovaplot-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/tukey_f675f75f5392a95fff1a49901e73e473">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/tukey-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/anovacor_ec97b7b28ea7aae863aa7d6ebf7d7621">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/anovacor-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="linear-regression-with-spatial-random-effect-lrsre" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression-with-spatial-random-effect-lrsre">Linear regression with spatial random effect (LRSRE)</h3>
+<!--# https://hughst.github.io/week-6/ -->
+<p>The LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns.</p>
+<div class="cell" data-hash="precipitation_cache/html/spammplot_2b64ac39410b315e4666a727dbc6ffc3">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/spammplot-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/spammcor_21a6c54dd8e43d803166661926567792">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/spammcor-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

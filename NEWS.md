@@ -1,3 +1,4 @@
+-   ideas 0.1.0.9006: cleaned tas, pr; etp to be added; then results to be discussed
 -   ideas 0.1.0.9005: delta precipitation january \~ tmf changes
 -   ideas 0.1.0.9004: delta temperature \~ tmf changes
 -   ideas 0.1.0.9003: fixed leaflet rasters

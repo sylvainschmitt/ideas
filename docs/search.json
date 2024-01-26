@@ -68,5 +68,19 @@
     "title": "Temperature",
     "section": "Conclusion",
     "text": "Conclusion\nLimits: warming (+0.5°C in 15 years), projection should include warming scenarios such as CMIP5 RCP or CMIP6 SSP.\n\n\n\n\nButt, Edward W., Jessica C. A. Baker, Francisco G. Silva Bezerra, Celso von Randow, Ana P. D. Aguiar, and Dominick V. Spracklen. 2023. “Amazon Deforestation Causes Strong Regional Warming.” Proceedings of the National Academy of Sciences 120 (45). https://doi.org/10.1073/pnas.2309123120."
+  },
+  {
+    "objectID": "precipitation.html#method",
+    "href": "precipitation.html#method",
+    "title": "Precipitation",
+    "section": "Method",
+    "text": "Method\n\nForest change\nWe used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.\n\n\n\n\n\n\n\nPrecipitation\nWe used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km2 in extent) over the Guiavare region.\n\n\n\n\n\n\n\nAnalysis\nFor each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes."
+  },
+  {
+    "objectID": "precipitation.html#results",
+    "href": "precipitation.html#results",
+    "title": "Precipitation",
+    "section": "Results",
+    "text": "Results\n\nAnalysis of variance (ANOVA)\nThe ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLinear regression with spatial random effect (LRSRE)\n\nThe LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns."
   }
 ]
