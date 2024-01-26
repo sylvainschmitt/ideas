@@ -8,7 +8,6 @@ book:
   date: last-modified
   chapters:
     - index.qmd
-    - landuse.qmd
     - temperature.qmd
     - precipitation.qmd
   appendices:

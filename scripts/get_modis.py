@@ -7,8 +7,8 @@ filein = snakemake.input[0]
 fileout = snakemake.output[0]
 
 # test
-# filein = "data/guaviare/guaviare.shp"
-# fileout = "results/data/modis_guaviare.nc"
+filein = "data/guaviare/guaviare.shp"
+fileout = "results/data/modis_guaviare.nc"
 
 # libs
 import geopandas as gp
@@ -49,16 +49,24 @@ ds = ds.where(ds.QC_Day.isin([int("00000000",2), int("00000100",2)]))
     #     0: Average LST error <= 1K
     
 ds2 = ds[["LST_Day_1km"]]
-ds2 = ds2.groupby("time.year").mean() # monthly average because only january
 ds2["LST_Day_1km"].values = ds2["LST_Day_1km"].values * 0.02 - 273.15 # scale factor + degrees
 
 # indices
-ds_tas = ds2.sel(year=slice(2015, 2020)).mean("year") - ds2.sel(year=slice(2001, 2006)).mean("year")
+
+ds2.sel(time=slice("2001-01-01", "2006-12-31")).groupby("time.year").mean().mean("year")
+
+ds_tas = ds2.sel(time=slice("2015-01-01", "2020-12-31")).groupby("time.year").mean().mean("year") \
+    - ds2.sel(time=slice("2001-01-01", "2006-12-31")).groupby("time.year").mean().mean("year")
 ds_tas = ds_tas.rename({"LST_Day_1km": "tas"})
-ds_tasmin = ds2.sel(year=slice(2015, 2020)).min("year") - ds2.sel(year=slice(2001, 2003)).min("year")
+
+ds_tasmin = ds2.sel(time=slice("2015-01-01", "2020-12-31")).min("time") - \
+    ds2.sel(time=slice("2001-01-01", "2006-12-31")).min("time")
 ds_tasmin = ds_tasmin.rename({"LST_Day_1km": "tasmin"})
-ds_tasmax = ds2.sel(year=slice(2015, 2020)).max("year") - ds2.sel(year=slice(2001, 2003)).max("year")
+
+ds_tasmax = ds2.sel(time=slice("2015-01-01", "2020-12-31")).max("time") - \
+    ds2.sel(time=slice("2001-01-01", "2006-12-31")).max("time")
 ds_tasmax = ds_tasmax.rename({"LST_Day_1km": "tasmax"})
+
 ds_all = xr.merge([ds_tas, ds_tasmax, ds_tasmin])
 
 # regid
