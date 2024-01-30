@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "IDEAS",
     "section": "",
-    "text": "Introduction\nMy participation into the IDEAS project - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Guaviare."
+    "text": "Introduction\nMy participation into the IDEAS project - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red) based on land use change in Guaviare, Caquetá and Guainía."
   },
   {
     "objectID": "index.html#sutdy-areas",
@@ -42,34 +42,6 @@
     "text": "Results\n\nAnalysis of variance (ANOVA)\nThe ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLinear regression with spatial random effect (LRSRE)\n\nThe LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns."
   },
   {
-    "objectID": "evapotranspiration.html#method",
-    "href": "evapotranspiration.html#method",
-    "title": "Evapotranspiration",
-    "section": "Method",
-    "text": "Method\n\nForest change\nWe used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.\n\n\n\n\n\n\n\nEvapotranspiration\nWe used total evapotranspiration (ET) data from MOD16A2GF version 6.1 MODIS ET data downscaled at 0.01-degree resolution grid (originally 500-m). We kept only pixels with (1) only good quality (MODLAND), (2) on both Terra and Aqua sensors,(3) detectors fine for up to 50% of channels 1, 2, (4) without significant clouds, (5) and the main method used for best result possible (no saturation). Indeed, extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season evapotranspiration changes were then calculated by comparing evapotranspiration of the driest month for two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. We computed both variations in mean evapotranspiration (et), maximum evapotranspiration (etmax), and minimum evapotranspiration (etmin). As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km2 in extent) over the Guiavare region.\n\n\n\n\n\n\n\nAnalysis\nFor each variable we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes."
-  },
-  {
-    "objectID": "evapotranspiration.html#results",
-    "href": "evapotranspiration.html#results",
-    "title": "Evapotranspiration",
-    "section": "Results",
-    "text": "Results\n\nAnalysis of variance (ANOVA)\nThe ANOVA and Tukey HSD tests revealed significantly higher evapotranspiration in deforested (+0.05°C [0.04-0.06]) an degraded (+0.03 [0.02-0.04]) lands compared to forest that remained undisturbed. But the autocorrelogram revealed significant positive spatial autocorrelation up to 100-km.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLinear regression with spatial random effect (LRSRE)\n\nThe LRSRE revealed only non significant marked effect of deforested forest on evapotranspiration increase (+2mm/8day [-3-7])."
-  },
-  {
-    "objectID": "vpd.html#method",
-    "href": "vpd.html#method",
-    "title": "VPD",
-    "section": "Method",
-    "text": "Method\n\nForest change\nWe used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.\n\n\n\n\n\n\n\nVPD\n…\n\n\n\n\n\n\n\nAnalysis\nFor each variable we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes."
-  },
-  {
-    "objectID": "vpd.html#results",
-    "href": "vpd.html#results",
-    "title": "VPD",
-    "section": "Results",
-    "text": "Results\n\nAnalysis of variance (ANOVA)\n…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLinear regression with spatial random effect (LRSRE)\n\n…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSilva, Queren Priscila da, Demerval Soares Moreira, Helber Custódio de Freitas, and Leonardo Moreno Domingues. 2024. “Discrepancies Between Observation and ERA5 Reanalysis in the Amazon Deforestation Context: A Case Study.” Dynamics of Atmospheres and Oceans, January, 101442. https://doi.org/10.1016/j.dynatmoce.2024.101442.\n\n\nXavier, Alexandre C., Bridget R. Scanlon, Carey W. King, and Aline I. Alves. 2022. “New Improved Brazilian Daily Weather Gridded Data (19612020).” International Journal of Climatology 42 (16): 8390–8404. https://doi.org/10.1002/joc.7731."
-  },
-  {
     "objectID": "literature.html#to-read",
     "href": "literature.html#to-read",
     "title": "Literature",
@@ -88,6 +60,6 @@
     "href": "references.html",
     "title": "References",
     "section": "",
-    "text": "Butt, Edward W., Jessica C. A. Baker, Francisco G. Silva Bezerra, Celso\nvon Randow, Ana P. D. Aguiar, and Dominick V. Spracklen. 2023.\n“Amazon Deforestation Causes Strong Regional Warming.”\nProceedings of the National Academy of Sciences 120 (45). https://doi.org/10.1073/pnas.2309123120.\n\n\nMuñoz-Sabater, Joaquín, Emanuel Dutra, Anna Agustí-Panareda, Clément\nAlbergel, Gabriele Arduini, Gianpaolo Balsamo, Souhail Boussetta, et al.\n2021. “ERA5-Land: A State-of-the-Art Global Reanalysis Dataset for\nLand Applications.” Earth System Science Data 13 (9):\n4349–83. https://doi.org/10.5194/essd-13-4349-2021.\n\n\nReygadas, Yunuen, Stephanie A. Spera, and David S. Salisbury. 2023.\n“Effects of Deforestation and Forest Degradation on Ecosystem\nService Indicators Across the Southwestern Amazon.”\nEcological Indicators 147 (March): 109996. https://doi.org/10.1016/j.ecolind.2023.109996.\n\n\nSenay, Gabriel B., Stefanie Bohms, Ramesh K. Singh, Prasanna H. Gowda,\nNaga M. Velpuri, Henok Alemu, and James P. Verdin. 2013.\n“Operational Evapotranspiration Mapping Using Remote Sensing and\nWeather Datasets: A New Parameterization for the SSEB Approach.”\nJAWRA Journal of the American Water Resources Association 49\n(3): 577–91. https://doi.org/10.1111/jawr.12057.\n\n\nSilva, Queren Priscila da, Demerval Soares Moreira, Helber Custódio de\nFreitas, and Leonardo Moreno Domingues. 2024. “Discrepancies\nBetween Observation and ERA5 Reanalysis in the Amazon Deforestation\nContext: A Case Study.” Dynamics of Atmospheres and\nOceans, January, 101442. https://doi.org/10.1016/j.dynatmoce.2024.101442.\n\n\nXavier, Alexandre C., Bridget R. Scanlon, Carey W. King, and Aline I.\nAlves. 2022. “New Improved Brazilian Daily Weather Gridded Data\n(19612020).” International Journal of\nClimatology 42 (16): 8390–8404. https://doi.org/10.1002/joc.7731."
+    "text": "Butt, Edward W., Jessica C. A. Baker, Francisco G. Silva Bezerra, Celso\nvon Randow, Ana P. D. Aguiar, and Dominick V. Spracklen. 2023.\n“Amazon Deforestation Causes Strong Regional Warming.”\nProceedings of the National Academy of Sciences 120 (45). https://doi.org/10.1073/pnas.2309123120.\n\n\nMuñoz-Sabater, Joaquín, Emanuel Dutra, Anna Agustí-Panareda, Clément\nAlbergel, Gabriele Arduini, Gianpaolo Balsamo, Souhail Boussetta, et al.\n2021. “ERA5-Land: A State-of-the-Art Global Reanalysis Dataset for\nLand Applications.” Earth System Science Data 13 (9):\n4349–83. https://doi.org/10.5194/essd-13-4349-2021.\n\n\nReygadas, Yunuen, Stephanie A. Spera, and David S. Salisbury. 2023.\n“Effects of Deforestation and Forest Degradation on Ecosystem\nService Indicators Across the Southwestern Amazon.”\nEcological Indicators 147 (March): 109996. https://doi.org/10.1016/j.ecolind.2023.109996.\n\n\nSenay, Gabriel B., Stefanie Bohms, Ramesh K. Singh, Prasanna H. Gowda,\nNaga M. Velpuri, Henok Alemu, and James P. Verdin. 2013.\n“Operational Evapotranspiration Mapping Using Remote Sensing and\nWeather Datasets: A New Parameterization for the SSEB Approach.”\nJAWRA Journal of the American Water Resources Association 49\n(3): 577–91. https://doi.org/10.1111/jawr.12057."
   }
 ]

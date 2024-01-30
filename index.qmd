@@ -1,6 +1,6 @@
 # Introduction {.unnumbered}
 
-My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Guaviare.
+My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red) based on land use change in Guaviare, Caquetá and Guainía.
 
 ## Sutdy areas
 
@@ -20,12 +20,19 @@ knitr::opts_chunk$set(
 ```{r data}
 #| include: false
 capricho <- st_read("data/capricho/capricho.shp")
-guaviare <- st_read("data/guaviare/guaviare.shp")
+guaviare <- st_read("results/area/Guaviare/Guaviare.shp")
+caqueta <- st_read("results/area/Caquetá/Caquetá.shp")
+guainia <- st_read("results/area/Guainía/Guainía.shp")
+amazonia <- st_read("data/Límite_de_la_Amazonia_colombiana._Escala _1 100.000/L%C3%ADmite_de_la_Amazonia_colombiana._Escala%3A_1%3A100.000.shp") %>% 
+  st_transform(crs(capricho))
 ```
 
 ```{r plotnc}
 leaflet() %>% 
   addTiles() %>%
-  addPolygons(data = guaviare) %>% 
+  addPolygons(data = amazonia, col = "darkgreen") %>% 
+  addPolygons(data = guaviare, col = "blue") %>% 
+  addPolygons(data = caqueta, col = "blue") %>% 
+  addPolygons(data = guainia, col = "blue") %>% 
   addPolygons(data = capricho, col = "red")
 ```

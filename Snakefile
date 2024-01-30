@@ -3,11 +3,14 @@ configfile: "config/config.yml"
 # rules #
 rule all:
    input:
-      expand("results/data/{source}_{area}.nc",
-             source=["hansen", "modis"],
-             area=config["area"])
+      expand("results/area/{area}",
+             area=config["regions"])
+      # expand("results/data/{source}_{area}.nc",
+      #        source=["hansen", "modis"],
+      #        area=config["area"])
 
-## data ##
+## rules ##
+include: "rules/get_gadm.py"
 include: "rules/get_chirps.py"
 include: "rules/crop_chirps.py"
 include: "rules/get_chelsa.py"
