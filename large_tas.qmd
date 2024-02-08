@@ -1,0 +1,104 @@
+# Temperature large {.unnumbered}
+
+```{r setup}
+#| include: false
+rm(list = ls()) ; invisible(gc()) ; set.seed(42)
+library(tidyverse)
+library(terra)
+library(sf)
+library(bayesplot)
+library(spNNGP)
+theme_set(bayesplot::theme_default())
+knitr::opts_chunk$set(
+  echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
+  cache = T, cache.lazy = F)
+```
+
+```{r data}
+area <- st_read("results/limits/limits.shp")
+tas <- rast("results/data/modis_anomalies.nc")
+deforest <- lapply(list.files("results/tmp/", pattern = "deforest", full.names = TRUE), rast) %>% 
+  lapply(resample, tas)
+```
+
+```{r}
+ggplot() +
+  tidyterra::geom_spatraster(data = deforest[[3]] > 0) +
+  theme_bw() +
+  scale_fill_viridis_d("", na.value = NA)
+```
+
+```{r}
+ggplot() +
+  tidyterra::geom_spatraster(data = tas[["tas"]]) +
+  theme_bw() +
+  scale_fill_viridis_c("", na.value = NA)
+```
+
+```{r}
+data <- lapply(deforest, as.data.frame, xy = T) %>% 
+  bind_rows() %>% 
+  rename(deforest = Dec2020) %>% 
+  filter(deforest > 0) %>% 
+  left_join(as.data.frame(tas, xy = TRUE)) %>% 
+  na.omit() %>% 
+  group_by(x, y) %>% 
+  summarise_all(mean)
+```
+
+```{r}
+data %>% 
+  gather(climate, value, -x, -y, -deforest) %>% 
+  gather(type, percent, -x, -y, -climate, -value) %>% 
+  ggplot(aes(percent, value, col = climate)) +
+  geom_point(alpha = 0.1) +
+  theme_bw() +
+  facet_wrap(~ type, nrow = 2) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+#| eval: false
+sim.s <- spNNGP(formula = tas ~ deforest,
+                data = data,
+                coords = data[c("x", "y")], 
+                starting = list("phi" = 3 / 0.5, "sigma.sq" = 1, "tau.sq" = 1),
+                tuning = list("phi" = 0.2), 
+                priors = list("phi.Unif" = c(3 / 1, 3 / 0.1),
+                              "sigma.sq.IG" = c(2, 1), "tau.sq.IG" = c(2, 1)), 
+                cov.model = "exponential",
+                n.samples = 2000, 
+                n.neighbors = 10, method = "latent", 
+                n.omp.threads = 20, n.report = 1000, fit.rep = TRUE,
+                sub.sample = list(start = 1000), return.neighbor.info = TRUE)
+save(sim.s, file = "save/large_tas.Rdata")
+```
+
+```{r}
+load("save/large_tas.Rdata")
+summary(sim.s)
+```
+
+```{r}
+mcmc_trace(sim.s$p.beta.samples, n_warmup = 1000)
+```
+
+```{r}
+mcmc_dens(sim.s$p.beta.samples[1001:2000,])
+```
+
+```{r }
+data2 <- data
+data2$res <- residuals(sim.s)$residuals.quantiles[,1]
+data2 <- data2 %>% ungroup() %>% sample_n(1000)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
+                   method = "Moran", nbclass = 30) %>% 
+    as.data.frame()
+cor %>% 
+  ggplot(aes(x = dist.class*100, y = coef)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10()
+```

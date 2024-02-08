@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Sylvain Schmitt">
-<meta name="dcterms.date" content="2024-02-08">
 
-<title>IDEAS</title>
+<title>IDEAS - Precipitation large</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -32,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./forest.html" rel="next">
+<link href="./large_tas.html" rel="next">
+<link href="./precipitation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -75,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./large_pr.html">Precipitation large</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -102,7 +101,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
@@ -126,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./large_pr.html" class="sidebar-item-text sidebar-link">
+  <a href="./large_pr.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Precipitation large</span></a>
   </div>
 </li>
@@ -171,39 +170,21 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">IDEAS</h1>
+<h1 class="title">Precipitation large</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Sylvain Schmitt </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">February 8, 2024</p>
-    </div>
-  </div>
   
     
   </div>
@@ -211,22 +192,78 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="introduction" class="level1 unnumbered">
-<h1 class="unnumbered">Introduction</h1>
-<p>My participation into the <a href="https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas">IDEAS project</a> - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red). We will work at multiple scales including from smallest to largest: (i) Capricho, (ii) Guiavare, and (iii) Guiavare, Caquetá, and Guainía (eventually the remaining Amazonian states from Colombia could be added). Unfortunately, only two weather stations data are available for the Amazon on the daily data of the <a href="https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily">Global Historical Climatology Network</a>, and they are far away from our study regions (but could still be used for a bit of validation of remotely sensed products).</p>
-<div class="cell" data-hash="index_cache/html/amazonmap_de737d53af4254b394847ff1aae92d04">
-<div class="cell-output-display">
-<p><img src="index_files/figure-html/amazonmap-1.png" class="img-fluid" width="768"></p>
+<div class="cell" data-hash="large_pr_cache/html/data_5b6a531c1e42a95e8f389fbcb7794196">
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `limits' from data source 
+  `/home/sschmitt/Documents/ideas/results/limits/limits.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 3 features and 11 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: -76.3064 ymin: -0.7056 xmax: -66.8377 ymax: 4.0452
+CRS:           NA</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="index_cache/html/weather_e7dcba8db8c7fcd78d588bd8907c7167">
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-1_2fe1ba2de4daa32a91468476afe016e1">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/weather-1.png" class="img-fluid" width="768"></p>
+<p><img src="large_pr_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-2_4fbc12117e8b5886531cb11669c30d6a">
+<div class="cell-output-display">
+<p><img src="large_pr_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-4_0e79188dfdc17920054e7e0501efedc2">
+<div class="cell-output-display">
+<p><img src="large_pr_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-6_6b2c5689c58667983a56f360daac3959">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+spNNGP(formula = pr ~ rescale(deforest), data = data, coords = data[c("x", 
+    "y")], method = "latent", n.neighbors = 10, starting = list(phi = 3/0.5, 
+    sigma.sq = 1, tau.sq = 1), tuning = list(phi = 0.2), priors = list(phi.Unif = c(3/1, 
+    3/0.1), sigma.sq.IG = c(2, 1), tau.sq.IG = c(2, 1)), cov.model = "exponential", 
+    n.samples = 2000, n.omp.threads = 4, return.neighbor.info = TRUE, 
+    fit.rep = TRUE, sub.sample = list(start = 1000), n.report = 1000)
+
+Model class is NNGP, method latent, family gaussian.
+
+Model object contains 2000 MCMC samples.
+
+Chain sub.sample:
+start = 1000
+end = 2000
+thin = 1
+samples size = 1001
+                  2.5%      25%       50%       75%       97.5%    
+(Intercept)       -214.9967 -214.9382 -214.8701 -214.8353 -214.7957
+rescale(deforest) -2.9156   -2.4548   -2.3371   -1.9979   -1.8342  
+sigma.sq          666.5229  682.0866  689.6441  697.5863  713.6348 
+tau.sq            0.0620    0.0727    0.0829    0.0931    0.1112   
+phi               3.0000    3.0001    3.0002    3.0005    3.0019   </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-7_fad557a2d03c7929c6a98648466dbe04">
+<div class="cell-output-display">
+<p><img src="large_pr_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-8_7f4b015fbb843c5153d7f63bfc0248d3">
+<div class="cell-output-display">
+<p><img src="large_pr_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="large_pr_cache/html/unnamed-chunk-9_6ed18c276fd0191e183ee77365b26d3e">
+<div class="cell-output-display">
+<p><img src="large_pr_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -464,10 +501,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./precipitation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Precipitation</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./forest.html" class="pagination-link">
-        <span class="nav-page-text">Forest</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./large_tas.html" class="pagination-link">
+        <span class="nav-page-text">Temperature large</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
