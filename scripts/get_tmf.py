@@ -1,41 +1,23 @@
-# log
-log_file = open(snakemake.log[0],"w")
-sys.stderr = sys.stdout = log_file
-
-# variables
-filein = snakemake.input[0]
-fileout = snakemake.output[0]
-
-# test
-filein = "data/guaviare/guaviare.shp"
-fileout = "results/data/tmf_guaviare.nc"
-
 # libs
-import geopandas as gp
-import ee
+
+# import geopandas as gp
 import xarray as xr
-import xesmf as xe
-import numpy as np
+import rioxarray as rio
 
-# grid
-area = gp.read_file(filein)
-xmin = round(area.bounds.minx[0], 2)
-xmax = round(area.bounds.maxx[0], 2)
-ymin = round(area.bounds.miny[0], 2)
-ymax = round(area.bounds.maxy[0], 2)
-ds_out = xr.Dataset(
-    {
-        "lat": (["lat"], np.arange(ymin, ymax, 0.01), {"units": "degrees_north"}),
-        "lon": (["lon"], np.arange(xmin, xmax, 0.01), {"units": "degrees_east"}),
-    }
-)
+# lim = gp.read_file("results/limits/limits.shp")
+# xmin = min(lim.bounds.minx)
+# xmax = max(lim.bounds.maxx)
+# ymin = min(lim.bounds.miny)
+# ymax = max(lim.bounds.maxx)
 
-# get
-ee.Initialize(opt_url='https://earthengine-highvolume.googleapis.com')
-ds = xr.open_dataset("projects/JRC/TMF/v1_2020/AnnualChanges", engine='ee')
-ds_all = ds[["Dec2001"]]
-
-# regid
-regridder = xe.Regridder(ds_all, ds_out, "bilinear")
-ds_r = regridder(ds_all, keep_attrs=True)
-ds_r.to_netcdf(fileout)
+ds = xr.open_mfdataset([
+    "data/JRC_TMF_AnnualChange_v1_SAM_ID47_N10_W80/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2001_SAM_ID47_N10_W80.tif",
+    "data/JRC_TMF_AnnualChange_v1_SAM_ID48_N10_W70/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2000_SAM_ID48_N10_W70.tif"]
+                       )
+ds.isel(band=0).rio.to_raster("test.tif")
+ds2 = ds.to_dataarray
+ds.to
+# mask_lon = (ds.x >= xmin) & (ds.x <= xmax)
+# mask_lat = (ds.y >= ymin) & (ds.y <= ymax)
+# ds.where(mask_lon & mask_lat, drop = True).load()
+    

@@ -1,8 +1,6 @@
 # Introduction {.unnumbered}
 
-My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red) based on land use change in Guaviare, Caquetá and Guainía.
-
-## Sutdy areas
+My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red). We will work at multiple scales including from smallest to largest: (i) Capricho, (ii) Guiavare, and (iii) Guiavare, Caquetá, and Guainía (eventually the remaining Amazonian states from Colombia could be added). Unfortunately, only two weather stations data are available for the Amazon on the daily data of the [Global Historical Climatology Network](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily), and they are far away from our study regions (but could still be used for a bit of validation of remotely sensed products).
 
 ```{r setup}
 #| include: false
@@ -10,7 +8,7 @@ rm(list = ls()) ; invisible(gc()) ; set.seed(42)
 library(tidyverse)
 library(terra)
 library(sf)
-library(leaflet)
+library(OpenStreetMap)
 theme_set(bayesplot::theme_default())
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
@@ -20,19 +18,43 @@ knitr::opts_chunk$set(
 ```{r data}
 #| include: false
 capricho <- st_read("data/capricho/capricho.shp")
-guaviare <- st_read("results/area/Guaviare/Guaviare.shp")
-caqueta <- st_read("results/area/Caquetá/Caquetá.shp")
-guainia <- st_read("results/area/Guainía/Guainía.shp")
+guaviare <- st_read("results/area/Guaviare/Guaviare.shp") %>% 
+  st_set_crs(crs(capricho))
+caqueta <- st_read("results/area/Caquetá/Caquetá.shp") %>% 
+  st_set_crs(crs(capricho))
+guainia <- st_read("results/area/Guainía/Guainía.shp") %>% 
+  st_set_crs(crs(capricho))
 amazonia <- st_read("data/Límite_de_la_Amazonia_colombiana._Escala _1 100.000/L%C3%ADmite_de_la_Amazonia_colombiana._Escala%3A_1%3A100.000.shp") %>% 
   st_transform(crs(capricho))
+stations <- read_table("data/ghcnd-stations.txt", 
+           col_names = c("station", "latitude", "longitude", "elevation", "state", "station")) %>% 
+  st_as_sf(coords = c('longitude', 'latitude'))%>% 
+  st_set_crs(crs(capricho)) %>% 
+  st_crop(amazonia)
 ```
 
-```{r plotnc}
-leaflet() %>% 
-  addTiles() %>%
-  addPolygons(data = amazonia, col = "darkgreen") %>% 
-  addPolygons(data = guaviare, col = "blue") %>% 
-  addPolygons(data = caqueta, col = "blue") %>% 
-  addPolygons(data = guainia, col = "blue") %>% 
-  addPolygons(data = capricho, col = "red")
+```{r amazonmap}
+ggplot() +
+  geom_sf(data = amazonia, aes(fill = "Colombian Amazon"), alpha = 0.5) +
+  geom_sf(data = capricho, aes(fill = "Capricho")) +
+  geom_sf(data = guaviare, aes(col = "Guiavare"), fill = NA, linewidth = 1.5) +
+  geom_sf(data = caqueta, aes(col = "Caquetá"), fill = NA, linewidth = 1.5) +
+  geom_sf(data = guainia, aes(col = "Guainía"), fill = NA, linewidth = 1.5) +
+  geom_sf_text(data = stations, aes(label = station_1), size = 4) +
+  theme_bw() +
+  scale_fill_manual("", values = c("red", "darkgreen")) +
+  scale_color_discrete("")
+```
+
+```{r weather}
+list.files("data", pattern = ".csv", full.names = TRUE) %>% 
+  lapply(vroom::vroom) %>% 
+  bind_rows() %>% 
+  select(-ends_with("_ATTRIBUTES")) %>% 
+  gather(variable, value, -STATION, -DATE, -LATITUDE, -LONGITUDE, -ELEVATION, -NAME) %>% 
+  ggplot(aes(DATE, value/10, col = NAME)) +
+  geom_line() +
+  facet_wrap(~ variable, scales = "free") +
+  theme_bw() +
+  theme(legend.position = "bottom", axis.title = element_blank())
 ```

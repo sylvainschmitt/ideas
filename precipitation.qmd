@@ -6,164 +6,180 @@ rm(list = ls()) ; invisible(gc()) ; set.seed(42)
 library(tidyverse)
 library(terra)
 library(sf)
-library(leaflet)
+library(spdep)
+library(spatialreg)
 theme_set(bayesplot::theme_default())
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
   cache = T, cache.lazy = F)
 ```
 
-This chapter doest not identify any trend in monthly precipitation in Guiavare with forest cover changes. The analysis of variance suggested higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust to spatial autocorrelation as the LRSRE revealed only null effects, suggesting that spatial autocorrelation explains all observed patterns. The differences might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia. Further directions include using other territories to try having a signal.
+We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability.
 
-## Method
-
-### Forest change
-
-We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.
-
-```{r tmfdata}
-#| include: false
-area <- st_read("data/guaviare/guaviare.shp", quiet=T)
-precip_r <- rast("results/data/chirps_guaviare.nc")
-tmf_2001 <- rast("data/JRC_TMF_AnnualChange_v1_SAM_ID47_N10_W80/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2001_SAM_ID47_N10_W80.tif") %>% crop(area)
-msk <- ifel(tmf_2001 != 1, NA, 1)
-tmf_2020 <- rast("data/JRC_TMF_AnnualChange_v1_SAM_ID47_N10_W80/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2020_SAM_ID47_N10_W80.tif") %>% crop(area) %>% mask(msk) %>% as.factor() %>% resample(precip_r)
-tmf_2020 <- as.factor(ifel(tmf_2020 %in% 1:3, tmf_2020, NA))
+```{r climdat}
+data <- rast("results/data/chirps_month.nc") %>% 
+  as.data.frame() %>% 
+  gather(time, value) %>% 
+  group_by(time) %>% 
+  summarise(l = quantile(value, 0.025, na.rm = TRUE), 
+            m = mean(value, na.rm = TRUE), 
+            h = quantile(value, 0.975, na.rm = TRUE)) %>% 
+  mutate(time = time(rast("results/data/chirps_month.nc")))
 ```
 
-```{r tmfplot}
-ggplot() +
-  tidyterra::geom_spatraster(data = tmf_2020) +
-  theme_bw() +
-  scale_fill_viridis_d("type") +
-  geom_sf(data = area, fill = NA, linewidth = 2) +
-  ggtitle("Guiavare forest change", 
-          "2020 versus 2001 from JRC TMF")
-```
-
-### Precipitation
-
-We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=\~74 thousands pixels (1 km^2^ in extent) over the Guiavare region.
-
-```{r prplot}
-area <- st_read("data/guaviare/guaviare.shp", quiet=T)
-precip_r <- rast("results/data/chirps_guaviare.nc")
-ggplot() +
-  tidyterra::geom_spatraster(data = precip_r[[1]]) +
-  theme_bw() +
-  scale_fill_viridis_c(expression(delta~pr)) +
-  geom_sf(data = area, fill = NA, linewidth = 2) +
-  ggtitle("Guiavare January Precipitation variations", 
-          "2015-2020 versus 2001-2006 from CHIRPS")
-```
-
-```{r prdata}
-data <- as.data.frame(precip_r, xy = T) %>% 
-  gather(variable, precipitation, -x, -y) %>% 
-  separate(variable, c("X1", "X2", "month"), convert = T) %>% 
-  select(-X1, -X2) %>% 
-  left_join(as.data.frame(tmf_2020, xy = T)) %>% 
-  na.omit() %>% 
-  mutate(type = recode(as.character(Dec2020),
-                       "1" = "Undisturbed",
-                       "2" = "Degraded",
-                       "3" = "Deforested"))
-```
-
-### Analysis
-
-For each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran's coefficients for 20 distance classes.
-
-## Results
-
-### Analysis of variance (ANOVA)
-
-The ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).
-
-```{r anovaplot}
-data %>% 
-  ggplot(aes(type, precipitation, fill = type)) +
-  geom_boxplot() +
-  theme_bw() +
-  ggpubr::stat_anova_test() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-        axis.title = element_blank(),
-        legend.position = "bottom") +
-  facet_wrap(~ month, scales = "free") +
-  scale_fill_discrete("") +
-  ggtitle("Guiavare monthly precipitation variation per forest change")
-```
-
-```{r tukey}
-data %>% 
-  split(data$month) %>% 
-  lapply(function(tab)
-    TukeyHSD(aov(precipitation ~ type, tab))$type %>% 
-                           as.data.frame() %>% 
-                           rownames_to_column("comp")) %>% 
-  bind_rows(.id = "month") %>% 
-  ggplot(aes(comp, diff, col = `p adj` <= 0.05)) +
+```{r climvaryear}
+ggplot(data, aes(time, m)) +
+  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
+  geom_line() +
   geom_point() +
-  geom_segment(aes(xend = comp, y = lwr, yend = upr)) +
   theme_bw() +
-  coord_flip() +
-  geom_vline(xintercept = 0) +
-  theme(axis.title = element_blank(), legend.position = "bottom") +
-  facet_wrap(~ month, scales = "free_x") +
-  ggtitle("Tukey honest significant difference tests")
+  theme(axis.title = element_blank())
 ```
 
-```{r anovacor}
-data2 <- filter(data, month == 1)
-data2$res_tas <- residuals(aov(precipitation ~ type, data2))
-data2 <- sample_n(data2, 1000)
-cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res_tas,
-                   method = "Moran", nbclass = 20) %>% 
-    as.data.frame()
-cor %>% 
-  ggplot(aes(x = dist.class*100, y = coef)) + 
-  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
-  geom_hline(yintercept = 0) +
-  theme_bw() +
-  xlab("Distance (km)") + ylab("Moran\'s I") +
-  ggtitle("ANOVA residuals spatial autocorrelation")
-```
-
-### Linear regression with spatial random effect (LRSRE)
-
-<!--# https://hughst.github.io/week-6/ -->
-
-The LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns.
-
-```{r spammfit}
-#| include: false
-#| eval: false
-m <- spaMM::fitme(precipitation ~ type + Matern(1|y+x), data2)
-tab <- summary(m)$beta_table
-save(m, tab, file = "save/precipitation.Rdata")
-```
-
-```{r spammplot}
-load("save/precipitation.Rdata")
-as.data.frame(tab) %>% 
-  rename(estimate = "Estimate", se = "Cond. SE", t = "t-value") %>% 
-  mutate(lower = estimate - 1.96*se, upper = estimate + 1.96*se) %>% 
-  rownames_to_column("type") %>% 
-  mutate(type  = c("Deforested", "Degraded", "Undisturbed")) %>% 
-  ggplot(aes(type, estimate)) +
+```{r climvarmonth}
+data %>% 
+  mutate(month = month(time), year = as.factor(year(time))) %>%
+  ggplot(aes(month, m, col = year, fill = year)) +
+  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
+  geom_line() +
   geom_point() +
-  geom_segment(aes(xend = type, y = lower, yend = upper)) +
   theme_bw() +
-  coord_flip() +
-  geom_vline(xintercept = 0) +
+  theme(axis.title = element_blank())
+```
+
+```{r climvarmonthmean}
+data %>% 
+  mutate(month = month(time)) %>%
+  group_by(month) %>% 
+  mutate_all(mean) %>% 
+  ggplot(aes(month, m)) +
+  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
   theme(axis.title = element_blank()) +
-  ggtitle("LRSRE results")
+  geom_vline(xintercept = c(1, 6))
 ```
 
-```{r spammcor}
-cor <- pgirmess::correlog(coords = data2[,c("x", "y")],
-                            z = residuals(m),
-                            method="Moran", nbclass=20) %>% 
+```{r climvar}
+rast("results/data/chirps_indices.nc") %>% 
+  as.data.frame() %>% 
+  gather(varyear, value) %>% 
+  group_by(varyear) %>% 
+  summarise(l = quantile(value, 0.025, na.rm = TRUE), 
+            m = mean(value, na.rm = TRUE), 
+            h = quantile(value, 0.975, na.rm = TRUE)) %>% 
+  separate(varyear, c("variable", "year"), "_year=", convert = T) %>% 
+  ggplot(aes(year, m, col = variable, fill = variable)) +
+  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  theme(axis.title = element_blank()) +
+  facet_wrap(~ variable, nrow = 3, scales = "free_y") +
+  geom_vline(xintercept = c(2001, 2003, 2018, 2020))
+```
+
+```{r data}
+clim_r <- rast("results/data/chirps_anomalies.nc")
+area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
+  st_set_crs(crs(clim_r))
+deforest <- rast("results/data/tmf_deforested_2020.tif") %>% 
+  resample(clim_r) %>% 
+  crop(area) %>% 
+  mask(area)
+degrad <- rast("results/data/tmf_degraded_2020.tif") %>% 
+  resample(clim_r) %>% 
+  crop(area) %>% 
+  mask(area)
+clim_r <- clim_r %>% 
+  crop(area) %>% 
+  mask(area)
+data <- as.data.frame(clim_r, xy = TRUE) %>% 
+  left_join(as.data.frame(deforest, xy = TRUE)) %>% 
+  rename(deforested = Dec2020) %>% 
+  left_join(as.data.frame(degrad, xy = TRUE)) %>% 
+  rename(degraded = Dec2020) %>% 
+  mutate(degraded = ifelse(degraded < 0.05, 0, degraded)) %>% 
+  na.omit()
+data_nn <- data %>% 
+  filter(deforested + degraded > 0)
+```
+
+```{r climplot}
+ggplot() +
+  tidyterra::geom_spatraster(data = clim_r[["pr"]]) +
+  theme_bw() +
+  scale_fill_viridis_c(expression(delta~P), na.value = NA) +
+  ggtitle("Guiavare total Precipitation anomalies", 
+          "2018-2020 versus 2001-2003 from CHIRPS")
+```
+
+## All
+
+```{r}
+data2 <- sample_n(data, 1000)
+cor1 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$pr,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "pr")
+cor2 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$pr_jan,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "pr_jan")
+cor3 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$pr_jun,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "pr_jun")
+bind_rows(cor1, cor2, cor3) %>% 
+  ggplot(aes(x = dist.class*100, y = coef, col = variable)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10()
+```
+
+```{r}
+data_test <- data %>% 
+  sample_n(1000) %>%
+  mutate(intact = 1)
+data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
+plot(data_adj, data_test[c("x", "y")])
+```
+
+```{r}
+data_test <- data %>% 
+  sample_n(10000) %>% 
+  mutate(intact = 1)
+data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
+```
+
+```{r}
+data %>% 
+  gather(climate, value, -x, -y, -deforested, -degraded) %>% 
+  gather(type, percent, -x, -y, -climate, -value) %>% 
+  ggplot(aes(percent, value, col = climate)) +
+  geom_point(alpha = 0.1) +
+  theme_bw() +
+  facet_wrap(~ type, nrow = 2) +
+  geom_smooth(method = "lm")
+```
+
+```{r }
+reg <- spautolm(pr ~ 0 + intact + degraded + deforested, 
+                data = data_test, 
+                listw = nb2listw(data_adj, zero.policy = TRUE), 
+                family = "CAR")
+summary(reg)
+```
+
+```{r }
+data2 <- data_test
+data2$res <- residuals(reg)
+data2 <- sample_n(data2, 1000)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
+                   method = "Moran", nbclass = 30) %>% 
     as.data.frame()
 cor %>% 
   ggplot(aes(x = dist.class*100, y = coef)) + 
@@ -171,5 +187,130 @@ cor %>%
   geom_hline(yintercept = 0) +
   theme_bw() +
   xlab("Distance (km)") + ylab("Moran\'s I") +
-  ggtitle("LRSRE residuals spatial autocorrelation")
+  scale_x_log10()
 ```
+
+## Non null
+
+```{r}
+data_test <- data_nn %>% 
+  sample_n(1000) %>%
+  mutate(intact = 1)
+data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
+plot(data_adj, data_test[c("x", "y")])
+```
+
+```{r}
+data_test <- data_nn %>%
+  mutate(intact = 1)
+data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
+```
+
+```{r}
+data_nn %>% 
+  gather(climate, value, -x, -y, -deforested, -degraded) %>% 
+  gather(type, percent, -x, -y, -climate, -value) %>% 
+  ggplot(aes(percent, value, col = climate)) +
+  geom_point(alpha = 0.1) +
+  theme_bw() +
+  facet_wrap(~ type, nrow = 2) +
+  geom_smooth(method = "lm")
+```
+
+```{r }
+reg <- spautolm(pr ~ 0 + intact + degraded + deforested, 
+                data = data_test, 
+                listw = nb2listw(data_adj, zero.policy = TRUE), 
+                family = "CAR")
+summary(reg)
+```
+
+```{r }
+data2 <- data_test
+data2$res <- residuals(reg)
+data2 <- sample_n(data2, 1000)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
+                   method = "Moran", nbclass = 30) %>% 
+    as.data.frame()
+cor %>% 
+  ggplot(aes(x = dist.class*100, y = coef)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10()
+```
+
+## Non null - spNNGP
+
+```{r}
+library(bayesplot)
+library(spNNGP)
+rescale <- function(x) (x - mean(x))/(quantile(x,0.975) - quantile(x,0.025))
+sim.s <- spNNGP(formula = pr ~ rescale(degraded) + rescale(deforested),
+                data = data_nn,
+                coords = data_nn[c("x", "y")], 
+                starting = list("phi" = 3 / 0.5, "sigma.sq" = 1, "tau.sq" = 1),
+                tuning = list("phi" = 0.2), 
+                priors = list("phi.Unif" = c(3 / 1, 3 / 0.1), "sigma.sq.IG" = c(2, 1), "tau.sq.IG" = c(2, 1)), 
+                cov.model = "exponential",
+                n.samples = 2000, 
+                n.neighbors = 10, method = "latent", 
+                ord = order(data_nn[, "x"] + data_nn[, "y"]),
+                n.omp.threads = 4, n.report = 1000, fit.rep = TRUE,
+                sub.sample = list(start = 1000), return.neighbor.info = TRUE)
+```
+
+```{r}
+summary(sim.s)
+```
+
+```{r}
+mcmc_trace(sim.s$p.beta.samples, n_warmup = 1000)
+```
+
+```{r}
+mcmc_dens(sim.s$p.beta.samples[1001:2000,])
+```
+
+```{r }
+data2 <- data_test
+data2$res <- residuals(sim.s)$residuals.quantiles[,1]
+data2 <- sample_n(data2, 1000)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
+                   method = "Moran", nbclass = 30) %>% 
+    as.data.frame()
+cor %>% 
+  ggplot(aes(x = dist.class*100, y = coef)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10()
+```
+
+## Non null - brms
+
+```{r}
+library(brms)
+library(bayesplot)
+data_test <- data_nn %>% 
+  sample_n(1000) %>%
+  mutate(intact = 1)
+N <- nrow(data_test)
+distances <- as.matrix(dist(data_test[c("x", "y")])*(1/0.01))
+W <- array(0, c(N, N))
+W[distances <= 10] <- 1
+fit <- brm(pr ~ 0 + intact + degraded + deforested + car(W, type = "icar"),
+           data = data_test, data2 = list(W = W), cores = 20)
+summary(fit)
+```
+
+```{r}
+mcmc_trace(fit, regex_pars = c("intact", "de"))
+```
+
+```{r}
+mcmc_hist(fit, regex_pars = c("intact", "de"))
+```
+

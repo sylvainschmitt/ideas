@@ -1,6 +1,7 @@
+-   ideas 0.1.0.9009: multiple car models
 -   ideas 0.1.0.9008: new areas defined with get_gadm
 -   ideas 0.1.0.9007: etp & vpd (era5 should not be trusted)
--   ideas 0.1.0.9006: cleaned tas, pr; etp to be added; then results to be discussed
+-   ideas 0.1.0.9006: cleaned tas, pr, etp to be added; then results to be discussed
 -   ideas 0.1.0.9005: delta precipitation january \~ tmf changes
 -   ideas 0.1.0.9004: delta temperature \~ tmf changes
 -   ideas 0.1.0.9003: fixed leaflet rasters

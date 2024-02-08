@@ -7,8 +7,8 @@ filein = snakemake.input[0]
 fileout = snakemake.output[0]
 
 # test
-filein = "data/guaviare/guaviare.shp"
-fileout = "results/data/modis_guaviare.nc"
+filein = "results/limits/limits.shp"
+# fileout = "results/data/modis_area.nc"
 
 # libs
 import geopandas as gp
@@ -19,10 +19,10 @@ import numpy as np
 
 # grid
 area = gp.read_file(filein)
-xmin = round(area.bounds.minx[0], 2)
-xmax = round(area.bounds.maxx[0], 2)
-ymin = round(area.bounds.miny[0], 2)
-ymax = round(area.bounds.maxy[0], 2)
+xmin = round(min(area.bounds.minx), 2)
+xmax = round(max(area.bounds.maxx), 2)
+ymin = round(min(area.bounds.miny), 2)
+ymax = round(max(area.bounds.maxy), 2)
 ds_out = xr.Dataset(
     {
         "lat": (["lat"], np.arange(ymin, ymax, 0.01), {"units": "degrees_north"}),
@@ -47,29 +47,34 @@ ds = ds.where(ds.QC_Day.isin([int("00000000",2), int("00000100",2)]))
     #     1: Average emissivity error <= 0.02
     # Bits 6-7: LST error flag
     #     0: Average LST error <= 1K
-    
 ds2 = ds[["LST_Day_1km"]]
 ds2["LST_Day_1km"].values = ds2["LST_Day_1km"].values * 0.02 - 273.15 # scale factor + degrees
 
 # indices
-
-ds2.sel(time=slice("2001-01-01", "2006-12-31")).groupby("time.year").mean().mean("year")
-
-ds_tas = ds2.sel(time=slice("2015-01-01", "2020-12-31")).groupby("time.year").mean().mean("year") \
-    - ds2.sel(time=slice("2001-01-01", "2006-12-31")).groupby("time.year").mean().mean("year")
+ds_tas = ds2.groupby("time.year").mean()
 ds_tas = ds_tas.rename({"LST_Day_1km": "tas"})
-
-ds_tasmin = ds2.sel(time=slice("2015-01-01", "2020-12-31")).min("time") - \
-    ds2.sel(time=slice("2001-01-01", "2006-12-31")).min("time")
+ds_tasmin = ds2.groupby("time.year").min("time")
 ds_tasmin = ds_tasmin.rename({"LST_Day_1km": "tasmin"})
-
-ds_tasmax = ds2.sel(time=slice("2015-01-01", "2020-12-31")).max("time") - \
-    ds2.sel(time=slice("2001-01-01", "2006-12-31")).max("time")
+ds_tasmax = ds2.groupby("time.year").max("time")
 ds_tasmax = ds_tasmax.rename({"LST_Day_1km": "tasmax"})
-
 ds_all = xr.merge([ds_tas, ds_tasmax, ds_tasmin])
+ds_all = ds_all.transpose('year', 'lat', 'lon')
+
+# import matplotlib.pyplot as plt
+# ds_all.sel(year=2001).tas.plot()
+# plt.show()
 
 # regid
 regridder = xe.Regridder(ds_all, ds_out, "bilinear")
 ds_r = regridder(ds_all, keep_attrs=True)
-ds_r.to_netcdf(fileout)
+# ds_r.to_netcdf(fileout1)
+ds_r.to_netcdf("results/data/modis_indices.nc")
+
+# anomalies
+ds_anom = ds_all.sel(year=slice(2018, 2020)).mean("year") -  ds_all.sel(year=slice(2001, 2003)).mean("year")
+
+# regid
+regridder = xe.Regridder(ds_anom, ds_out, "bilinear")
+ds_r = regridder(ds_anom, keep_attrs=True)
+# ds_r.to_netcdf(fileout2)
+ds_r.to_netcdf("results/data/modis_anomalies.nc")

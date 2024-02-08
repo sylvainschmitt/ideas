@@ -1,0 +1,199 @@
+# Forest {.unnumbered}
+
+```{r setup}
+#| include: false
+rm(list = ls()) ; invisible(gc()) ; set.seed(42)
+library(tidyverse)
+library(terra)
+library(sf)
+library(leaflet)
+theme_set(bayesplot::theme_default())
+knitr::opts_chunk$set(
+  echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
+  cache = T, cache.lazy = F)
+```
+
+We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree by computing the percentage of degraded and deforested pixels.
+
+```{r tmfdata}
+#| include: false
+#| eval: false
+temp_r <- rast("results/data/modis.nc")
+area <- st_read("results/limits/limits.shp", quiet=T) %>% 
+  st_set_crs(crs(temp_r))
+prep_tmf <- function(tile){
+  tmf_2001 <- rast(
+    paste0("data/JRC_TMF_AnnualChange_v1_", 
+           tile,
+           "/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2001_",
+           tile,
+           ".tif")) %>% crop(area)
+    msk <- ifel(tmf_2001 != 1, NA, 1)
+    # writeRaster(msk, paste0("results/tmp/tmf_", tile, "_forest_2001.tif"))
+    tmf_2020 <- rast(
+    paste0("data/JRC_TMF_AnnualChange_v1_", 
+           tile,
+           "/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2020_",
+           tile,
+           ".tif")) %>% crop(area) %>% mask(msk)
+    tmf_2020 <- as.factor(ifel(tmf_2020 %in% 1:3, tmf_2020, NA))
+    degrad_2020 <- as.numeric(tmf_2020 == 2) %>% 
+      aggregate(37, method = "mean")
+    # %>% resample(temp_r)
+    deforest_2020 <- as.numeric(tmf_2020 == 3) %>% 
+      aggregate(37, method = "mean")
+    # %>% resample(temp_r)
+    writeRaster(degrad_2020, paste0("results/tmp/tmf_", tile, "_degraded_2020.tif"))
+    writeRaster(deforest_2020, paste0("results/tmp/tmf_", tile, "_deforested_2020.tif"))
+}
+lapply(c("SAM_ID28_N0_W80",
+         "SAM_ID29_N0_W70",
+         "SAM_ID47_N10_W80",
+         "SAM_ID48_N10_W70"),
+       prep_tmf)
+```
+
+## All
+
+```{r deforest2021g}
+temp_r <- rast("results/data/modis_anomalies.nc")
+area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
+  st_set_crs(crs(temp_r))
+deforest <- rast("results/data/tmf_deforested_2020.tif") %>% 
+  resample(temp_r) %>% 
+  crop(area) %>% 
+  mask(area)
+ggplot() +
+  tidyterra::geom_spatraster(data = deforest) +
+  theme_bw() +
+  geom_sf(data = area, fill = NA, linewidth = 2) +
+  ggtitle("Guiavare: percentage of deforestation in 2020") +
+  scale_fill_viridis_c(na.value = NA)
+```
+
+```{r degrad2020g}
+temp_r <- rast("results/data/modis_anomalies.nc")
+area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
+  st_set_crs(crs(temp_r))
+degrad <- rast("results/data/tmf_degraded_2020.tif") %>% 
+  resample(temp_r) %>% 
+  crop(area) %>% 
+  mask(area)
+ggplot() +
+  tidyterra::geom_spatraster(data = degrad) +
+  theme_bw() +
+  geom_sf(data = area, fill = NA, linewidth = 2) +
+  ggtitle("Guiavare: percentage of degradation in 2020") +
+  scale_fill_viridis_c(na.value = NA)
+```
+
+```{r histg}
+data <- data.frame(deforest = values(deforest),
+                   degrad = values(degrad))
+names(data) <- c("deforested", "degraded")
+data %>% 
+  gather(variable, value) %>% 
+  na.omit() %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  theme_bw() +
+  facet_wrap(~ variable ~ (value > 0.05), 
+             scales = "free_y", labeller = label_both)
+```
+
+```{r tmfcor}
+data <- as.data.frame(deforest, xy = TRUE) %>% 
+  rename(deforested = Dec2020) %>% 
+  left_join(as.data.frame(degrad, xy = TRUE)) %>% 
+  rename(degraded = Dec2020) %>% 
+  na.omit() %>% 
+  sample_n(1000)
+cor1 <- pgirmess::correlog(data.frame(data$x, data$y), data$deforested,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "deforested")
+cor2 <- pgirmess::correlog(data.frame(data$x, data$y), data$degraded,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "degraded")
+bind_rows(cor1, cor2) %>% 
+  ggplot(aes(x = dist.class*100, y = coef, col = variable)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10()
+```
+
+## Non null
+
+```{r deforest2021}
+temp_r <- rast("results/data/modis_anomalies.nc")
+area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
+  st_set_crs(crs(temp_r))
+deforest <- rast("results/data/tmf_deforested_2020.tif") %>% 
+  resample(temp_r) %>% 
+  crop(area) %>% 
+  mask(area)
+deforest <- ifel(deforest > 0, deforest, NA)
+ggplot() +
+  tidyterra::geom_spatraster(data = deforest) +
+  theme_bw() +
+  geom_sf(data = area, fill = NA, linewidth = 2) +
+  ggtitle("Guiavare: percentage > 0 of deforestation in 2020") +
+  scale_fill_viridis_c(na.value = NA)
+```
+
+```{r degrad2020}
+temp_r <- rast("results/data/modis_anomalies.nc")
+area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
+  st_set_crs(crs(temp_r))
+degrad <- rast("results/data/tmf_degraded_2020.tif") %>% 
+  resample(temp_r) %>% 
+  crop(area) %>% 
+  mask(area)
+degrad <- ifel(degrad > 0.05, degrad, NA)
+ggplot() +
+  tidyterra::geom_spatraster(data = degrad) +
+  theme_bw() +
+  geom_sf(data = area, fill = NA, linewidth = 2) +
+  ggtitle("Guiavare: percentage > 5% of degradation in 2020") +
+  scale_fill_viridis_c(na.value = NA)
+```
+
+```{r hist}
+data <- data.frame(deforest = values(deforest),
+                   degrad = values(degrad))
+names(data) <- c("deforested", "degraded")
+data %>% 
+  gather(variable, value) %>% 
+  na.omit() %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  theme_bw() +
+  facet_wrap(~ variable, 
+             scales = "free_y", labeller = label_both)
+```
+
+```{r tmfcorz}
+data <- as.data.frame(deforest, xy = TRUE) %>% 
+  rename(deforested = Dec2020) %>% 
+  left_join(as.data.frame(degrad, xy = TRUE)) %>% 
+  rename(degraded = Dec2020) %>% 
+  na.omit()
+cor1 <- pgirmess::correlog(data.frame(data$x, data$y), data$deforested,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "deforested")
+cor2 <- pgirmess::correlog(data.frame(data$x, data$y), data$degraded,
+                   method = "Moran", nbclass = 30) %>% 
+  as.data.frame() %>% 
+  mutate(variable = "degraded")
+bind_rows(cor1, cor2) %>% 
+  ggplot(aes(x = dist.class*100, y = coef, col = variable)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10()
+```

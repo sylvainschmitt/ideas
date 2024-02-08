@@ -17,3 +17,5 @@ dependencies:
   - myproxyclient
   - gcsfs
   - zarr
+  - earthengine-api
+  - xee

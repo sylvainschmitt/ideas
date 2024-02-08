@@ -107,6 +107,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Forest</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./temperature.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Temperature</span></a>
   </div>
@@ -156,17 +162,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#method" id="toc-method" class="nav-link active" data-scroll-target="#method">Method</a>
-  <ul class="collapse">
-  <li><a href="#forest-change" id="toc-forest-change" class="nav-link" data-scroll-target="#forest-change">Forest change</a></li>
-  <li><a href="#precipitation" id="toc-precipitation" class="nav-link" data-scroll-target="#precipitation">Precipitation</a></li>
-  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
-  </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
-  <ul class="collapse">
-  <li><a href="#analysis-of-variance-anova" id="toc-analysis-of-variance-anova" class="nav-link" data-scroll-target="#analysis-of-variance-anova">Analysis of variance (ANOVA)</a></li>
-  <li><a href="#linear-regression-with-spatial-random-effect-lrsre" id="toc-linear-regression-with-spatial-random-effect-lrsre" class="nav-link" data-scroll-target="#linear-regression-with-spatial-random-effect-lrsre">Linear regression with spatial random effect (LRSRE)</a></li>
-  </ul></li>
+  <li><a href="#all" id="toc-all" class="nav-link active" data-scroll-target="#all">All</a></li>
+  <li><a href="#non-null" id="toc-non-null" class="nav-link" data-scroll-target="#non-null">Non null</a></li>
+  <li><a href="#non-null---spnngp" id="toc-non-null---spnngp" class="nav-link" data-scroll-target="#non-null---spnngp">Non null - spNNGP</a></li>
+  <li><a href="#non-null---brms" id="toc-non-null---brms" class="nav-link" data-scroll-target="#non-null---brms">Non null - brms</a></li>
   </ul>
 </nav>
     </div>
@@ -190,70 +189,282 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>This chapter doest not identify any trend in monthly precipitation in Guiavare with forest cover changes. The analysis of variance suggested higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust to spatial autocorrelation as the LRSRE revealed only null effects, suggesting that spatial autocorrelation explains all observed patterns. The differences might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia. Further directions include using other territories to try having a signal.</p>
-<section id="method" class="level2">
-<h2 class="anchored" data-anchor-id="method">Method</h2>
-<section id="forest-change" class="level3">
-<h3 class="anchored" data-anchor-id="forest-change">Forest change</h3>
-<p>We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree.</p>
-<div class="cell" data-hash="precipitation_cache/html/tmfplot_253cdb67e2768662f6ffa674fbedc80c">
+<p>We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability.</p>
+<div class="cell" data-hash="precipitation_cache/html/climvaryear_45e0f17588ab13f0f2ac92814cdf553c">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/tmfplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="precipitation_files/figure-html/climvaryear-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/climvarmonth_531bede856fdb9d89f50d1833a858e32">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/climvarmonth-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/climvarmonthmean_bb7db82d4dbf3fa1427b2f340d46c862">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/climvarmonthmean-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/climvar_b574e8dd40725dd4c208ee6f49b324d7">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/climvar-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/climplot_e1098981c3c8dd1761d09b2e07236420">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/climplot-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<section id="all" class="level2">
+<h2 class="anchored" data-anchor-id="all">All</h2>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-1_5040f5b091129f7872d9f7167862bd16">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-2_b915b4b5fd65bf0e334783a3bb6615bd">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-4_3eee2665a75296a7bbe48b9d9384c2ca">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-5_f18e0dcaeb0d2e5efc82b00d22594a62">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call: 
+spautolm(formula = pr ~ 0 + intact + degraded + deforested, data = data_test, 
+    listw = nb2listw(data_adj, zero.policy = TRUE), family = "CAR")
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-143.7694   -1.1847    0.1397    1.4751   59.9397 
+
+Coefficients: 
+            Estimate Std. Error z value  Pr(&gt;|z|)
+intact     -306.0691     6.4723 -47.289 &lt; 2.2e-16
+degraded    105.3480     5.8314  18.066 &lt; 2.2e-16
+deforested  174.2936     5.1377  33.924 &lt; 2.2e-16
+
+Lambda: 1 LR test value: 45645 p-value: &lt; 2.22e-16 
+Numerical Hessian standard error of lambda: NaN 
+
+Log likelihood: -36595.33 
+ML residual variance (sigma squared): 86.27, (sigma: 9.2882)
+Number of observations: 10000 
+Number of parameters estimated: 5 
+AIC: 73201</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-6_6b65b970aa70238a1ebc8242cf791ae2">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="precipitation" class="level3">
-<h3 class="anchored" data-anchor-id="precipitation">Precipitation</h3>
-<p>We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2015 to 2020) and start (2001 to 2006) of the study period. Using 5-y averages reduces the influences of climate variability. As a final preprocessing step, we used forest change classification to keep only pixels undisturbed, degraded or deforested in 2020. Our final dataset comprised n=~74 thousands pixels (1 km<sup>2</sup> in extent) over the Guiavare region.</p>
-<div class="cell" data-hash="precipitation_cache/html/prplot_7f17998c3c525e1338795cf0b0942739">
+<section id="non-null" class="level2">
+<h2 class="anchored" data-anchor-id="non-null">Non null</h2>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-7_2e47efb19b76086637846344298cc17c">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/prplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="precipitation_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-9_19ed78cb094d8344650a1b76795723f2">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-10_54f241a81dfa7239659da64d780f152d">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call: 
+spautolm(formula = pr ~ 0 + intact + degraded + deforested, data = data_test, 
+    listw = nb2listw(data_adj, zero.policy = TRUE), family = "CAR")
+
+Residuals:
+       Min         1Q     Median         3Q        Max 
+-184.24367   -2.54078    0.55098    4.26227  152.18720 
+
+Coefficients: 
+            Estimate Std. Error   z value  Pr(&gt;|z|)
+intact     -410.9472     3.6168 -113.6217 &lt; 2.2e-16
+degraded     36.9502     6.4359    5.7412 9.399e-09
+deforested  103.9335     4.7745   21.7685 &lt; 2.2e-16
+
+Lambda: 0.9993 LR test value: 5182.9 p-value: &lt; 2.22e-16 
+Numerical Hessian standard error of lambda: 0.00015631 
+
+Log likelihood: -7643.538 
+ML residual variance (sigma squared): 192.13, (sigma: 13.861)
+Number of observations: 1839 
+Number of parameters estimated: 5 
+AIC: 15297</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-11_8b081f1ac8d0baadea6d865c1a513903">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="analysis" class="level3">
-<h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
-<p>For each month, we first realised an analysis of variance of temperature variation against forest change types associated to a Tukey honest significant difference test. To account for spatial autocorrelation, we further realised a linear regression with spatial random effect using a matern covariance and inferred with maximum likelihood on a subset of a thousand pixels. We tested for autocorrelation in residuals of both models Moran’s coefficients for 20 distance classes.</p>
+<section id="non-null---spnngp" class="level2">
+<h2 class="anchored" data-anchor-id="non-null---spnngp">Non null - spNNGP</h2>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-12_b8d3769636eaf29e3e65a7651491f4d1">
+<div class="cell-output cell-output-stdout">
+<pre><code>----------------------------------------
+    Building the neighbor list
+----------------------------------------
+----------------------------------------
+Building the neighbors of neighbors list
+----------------------------------------
+----------------------------------------
+    Model description
+----------------------------------------
+NNGP Latent model fit with 1839 observations.
+
+Number of covariates 3 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 2000.
+
+Priors and hyperpriors:
+    beta flat.
+    sigma.sq IG hyperpriors shape=2.00000 and scale=1.00000
+    tau.sq IG hyperpriors shape=2.00000 and scale=1.00000
+    phi Unif hyperpriors a=3.00000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 4 thread(s).
+----------------------------------------
+        Sampling
+----------------------------------------
+Sampled: 1000 of 2000, 50.00%
+Report interval Metrop. Acceptance rate: 93.50%
+Overall Metrop. Acceptance rate: 93.50%
+-------------------------------------------------
+Sampled: 2000 of 2000, 100.00%
+Report interval Metrop. Acceptance rate: 91.10%
+Overall Metrop. Acceptance rate: 92.30%
+-------------------------------------------------</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-13_322167f67682c00d29027e386fcf6420">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+spNNGP(formula = pr ~ rescale(degraded) + rescale(deforested), 
+    data = data_nn, coords = data_nn[c("x", "y")], method = "latent", 
+    n.neighbors = 10, starting = list(phi = 3/0.5, sigma.sq = 1, 
+        tau.sq = 1), tuning = list(phi = 0.2), priors = list(phi.Unif = c(3/1, 
+        3/0.1), sigma.sq.IG = c(2, 1), tau.sq.IG = c(2, 1)), 
+    cov.model = "exponential", n.samples = 2000, n.omp.threads = 4, 
+    ord = order(data_nn[, "x"] + data_nn[, "y"]), return.neighbor.info = TRUE, 
+    fit.rep = TRUE, sub.sample = list(start = 1000), n.report = 1000)
+
+Model class is NNGP, method latent, family gaussian.
+
+Model object contains 2000 MCMC samples.
+
+Chain sub.sample:
+start = 1000
+end = 2000
+thin = 1
+samples size = 1001
+                    2.5%      25%       50%       75%       97.5%    
+(Intercept)         -325.5443 -325.3662 -325.2419 -325.1948 -325.1479
+rescale(degraded)   -0.6250   -0.2412   -0.0336   0.1287    0.4460   
+rescale(deforested) -0.0675   0.2615    0.4062    0.5765    0.9608   
+sigma.sq            179.3628  186.8938  190.9888  195.1104  203.4810 
+tau.sq              0.0570    0.0697    0.0796    0.0897    0.1052   
+phi                 3.0000    3.0004    3.0014    3.0043    3.0124   </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-14_5f9876debb9c012a1a7608747562f5f6">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-15_e1950db10dc67d5e377d569f8f84fb0b">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-16_9324ce1d27ad9ded78a8f0bf641ce169">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
 </section>
-</section>
-<section id="results" class="level2">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
-<section id="analysis-of-variance-anova" class="level3">
-<h3 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of variance (ANOVA)</h3>
-<p>The ANOVA and Tukey HSD tests suggested significantly higher precipitation in undisturbed forest for September and October, but lower precipitation in undisturbed forest for the rest of the year. However, this results are not robust as the autocorrelogram revealed significant positive spatial autocorrelation up to 160-km. The difference might only be due to the globally higher precipitation of the north or the fact that open land may in fact temporarily increase precipitation by breaking the east to west water flux over Amazonia (add ref).</p>
-<div class="cell" data-hash="precipitation_cache/html/anovaplot_1e1a1bb0087046fb55a84860a6a7f545">
+<section id="non-null---brms" class="level2">
+<h2 class="anchored" data-anchor-id="non-null---brms">Non null - brms</h2>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-17_5ec3bbec80bdfb8315835019a4fdd0cd">
+<div class="cell-output cell-output-stdout">
+<pre><code>Running /usr/lib/R/bin/R CMD SHLIB foo.c
+using C compiler: ‘gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0’
+gcc -I"/usr/share/R/include" -DNDEBUG   -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/Rcpp/include/"  -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/"  -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/unsupported"  -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/BH/include" -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/src/"  -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/"  -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppParallel/include/"  -I"/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DUSE_STANC3 -DSTRICT_R_HEADERS  -DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  -DBOOST_NO_AUTO_PTR  -include '/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1       -fpic  -g -O2 -ffile-prefix-map=/build/r-base-H0vbME/r-base-4.3.2=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2  -c foo.c -o foo.o
+In file included from /home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/Eigen/Core:88,
+                 from /home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/Eigen/Dense:1,
+                 from /home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22,
+                 from &lt;command-line&gt;:
+/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:1: error: unknown type name ‘namespace’
+  628 | namespace Eigen {
+      | ^~~~~~~~~
+/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:17: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+  628 | namespace Eigen {
+      |                 ^
+In file included from /home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/Eigen/Dense:1,
+                 from /home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22,
+                 from &lt;command-line&gt;:
+/home/sschmitt/R/x86_64-pc-linux-gnu-library/4.3/RcppEigen/include/Eigen/Core:96:10: fatal error: complex: Aucun fichier ou dossier de ce type
+   96 | #include &lt;complex&gt;
+      |          ^~~~~~~~~
+compilation terminated.
+make: *** [/usr/lib/R/etc/Makeconf:191 : foo.o] Erreur 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: gaussian 
+  Links: mu = identity; sigma = identity 
+Formula: pr ~ 0 + intact + degraded + deforested + car(W, type = "icar") 
+   Data: data_test (Number of observations: 1000) 
+  Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+         total post-warmup draws = 4000
+
+Correlation Structures:
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sdcar    35.65      0.81    34.41    37.83 2.61        5       12
+
+Population-Level Effects: 
+           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+intact      -329.63      0.10  -329.82  -329.41 1.11       54      163
+degraded       1.51      3.44    -5.45     8.49 1.14       22       68
+deforested     0.65      2.90    -4.94     6.04 1.09       66      253
+
+Family Specific Parameters: 
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sigma     0.43      0.19     0.10     0.78 2.06        5       12
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-18_3dbc0fefae50962523934f0331c387c8">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/anovaplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="precipitation_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/tukey_f675f75f5392a95fff1a49901e73e473">
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-19_6acf7e14f2f1d4c4c3eb402fe07f0cff">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/tukey-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="precipitation_cache/html/anovacor_ec97b7b28ea7aae863aa7d6ebf7d7621">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/anovacor-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-</section>
-<section id="linear-regression-with-spatial-random-effect-lrsre" class="level3">
-<h3 class="anchored" data-anchor-id="linear-regression-with-spatial-random-effect-lrsre">Linear regression with spatial random effect (LRSRE)</h3>
-<!--# https://hughst.github.io/week-6/ -->
-<p>The LRSRE revealed only effect centred on 0, suggesting that spatial autocorrelation explains all observed patterns.</p>
-<div class="cell" data-hash="precipitation_cache/html/spammplot_2b64ac39410b315e4666a727dbc6ffc3">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/spammplot-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="precipitation_cache/html/spammcor_21a6c54dd8e43d803166661926567792">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/spammcor-1.png" class="img-fluid" width="768"></p>
+<p><img src="precipitation_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
