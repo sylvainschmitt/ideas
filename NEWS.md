@@ -1,4 +1,5 @@
--   ideas 0.1.0.901: larger pr & tas
+-   ideas 0.1.0.9011: summarised colombian amazon
+-   ideas 0.1.0.9010: larger pr & tas
 -   ideas 0.1.0.9009: multiple car models
 -   ideas 0.1.0.9008: new areas defined with get_gadm
 -   ideas 0.1.0.9007: etp & vpd (era5 should not be trusted)

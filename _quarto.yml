@@ -11,8 +11,7 @@ book:
     - forest.qmd
     - temperature.qmd
     - precipitation.qmd
-    - large_pr.qmd
-    - large_tas.qmd
+    - large.qmd
   appendices:
     - literature.qmd
     - meetings.qmd

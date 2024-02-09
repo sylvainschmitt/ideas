@@ -313,4 +313,3 @@ mcmc_trace(fit, regex_pars = c("intact", "de"))
 ```{r}
 mcmc_hist(fit, regex_pars = c("intact", "de"))
 ```
-
