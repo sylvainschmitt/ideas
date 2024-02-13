@@ -127,7 +127,7 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./forest.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Forest</span></a>
+ <span class="menu-text">Deforestation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -140,12 +140,6 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="./precipitation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Precipitation</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./large.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Colombian Amazon</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -187,8 +181,10 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#all" id="toc-all" class="nav-link active" data-scroll-target="#all">All</a></li>
-  <li><a href="#non-null" id="toc-non-null" class="nav-link" data-scroll-target="#non-null">Non null</a></li>
+  <li><a href="#comparisons" id="toc-comparisons" class="nav-link active" data-scroll-target="#comparisons">Comparisons</a></li>
+  <li><a href="#linear-regressions" id="toc-linear-regressions" class="nav-link" data-scroll-target="#linear-regressions">Linear regressions</a></li>
+  <li><a href="#spatial-regressions" id="toc-spatial-regressions" class="nav-link" data-scroll-target="#spatial-regressions">Spatial regressions</a></li>
+  <li><a href="#spatial-methods" id="toc-spatial-methods" class="nav-link" data-scroll-target="#spatial-methods">Spatial methods</a></li>
   </ul>
 </nav>
     </div>
@@ -212,111 +208,123 @@ div.csl-indent {
 
 </header>
 
-<p>Following <span class="citation" data-cites="butt2023">Butt et al. (<a href="references.html#ref-butt2023" role="doc-biblioref">2023</a>)</span>, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed both variations in mean temperature (tas), maximum temperature (tasmax), and minimum temperature (tasmin).</p>
-<div class="cell" data-hash="temperature_cache/html/climvar_1455661b4b4c18927f31e1aa91619151">
+<p>Following <span class="citation" data-cites="butt2023">Butt et al. (<a href="references.html#ref-butt2023" role="doc-biblioref">2023</a>)</span>, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed variations in mean temperature (tas). Monthly or seasonal indices could be used at a later stage, but we must be wary of seasonal variations across space. Daily extrema could also be used.</p>
+<div class="cell" data-hash="temperature_cache/html/yearly_5beb079d50627d61ac51b71e17f65cd7">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/climvar-1.png" class="img-fluid" width="768"></p>
+<p><img src="temperature_files/figure-html/yearly-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="temperature_cache/html/climplot_00762cbb2cc1c7a79d01691c92159ff7">
+<div class="cell" data-hash="temperature_cache/html/ca2022_ca48a6d01e1dadd2add14f8c87ab0d6b">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/climplot-1.png" class="img-fluid" width="768"></p>
+<p><img src="temperature_files/figure-html/ca2022-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<section id="all" class="level2">
-<h2 class="anchored" data-anchor-id="all">All</h2>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-1_bd23f4f7833560b0e0570238ae3edfbc">
+<div class="cell" data-hash="temperature_cache/html/caanom_b9b8536e78f77fe1ef25a52385f40bb1">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="768"></p>
+<p><img src="temperature_files/figure-html/caanom-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-2_9c4b9aa8cbbac7e92561082e47d4a64e">
+<section id="comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="comparisons">Comparisons</h2>
+<p>Comparing deforestation surfaces to climate anomalies seems to indicate an increase in temperature with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.</p>
+<div class="cell" data-hash="temperature_cache/html/cacomp_4262f8dca02d8c179a7fb71accd284b9">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-4_3693c7f3a0ea96ce44a707a1efd8e152">
-<div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-5_46f9b92faf149b63c24024e50829f522">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call: spautolm(formula = tasmax ~ 0 + intact + degraded + deforested, 
-    data = data_test, listw = nb2listw(data_adj, zero.policy = TRUE), 
-    family = "CAR")
-
-Residuals:
-        Min          1Q      Median          3Q         Max 
--2.20267419 -0.00618900 -0.00020554  0.00475390  0.86977371 
-
-Coefficients: 
-            Estimate Std. Error z value  Pr(&gt;|z|)
-intact      2.076344   0.034299  60.536 &lt; 2.2e-16
-degraded   -0.814739   0.023643 -34.459 &lt; 2.2e-16
-deforested -0.954564   0.016205 -58.905 &lt; 2.2e-16
-
-Lambda: 0.99998 LR test value: 45398 p-value: &lt; 2.22e-16 
-Numerical Hessian standard error of lambda: NaN 
-
-Log likelihood: 18406.07 
-ML residual variance (sigma squared): 0.0014405, (sigma: 0.037954)
-Number of observations: 10000 
-Number of parameters estimated: 5 
-AIC: -36802</code></pre>
-</div>
-</div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-6_4406ceb55d62984f5864008c7b07f728">
-<div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
+<p><img src="temperature_files/figure-html/cacomp-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="non-null" class="level2">
-<h2 class="anchored" data-anchor-id="non-null">Non null</h2>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-7_b62fdc4453f1dd8f5bafd51c9e332561">
+<section id="linear-regressions" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regressions">Linear regressions</h2>
+<p>Classic linear regression without accounting for spatial autocorrelation found a general and significant increase in temperature (+0.19°C) and a significant increase in temperature (+0.52°C) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.</p>
+<div class="cell" data-hash="temperature_cache/html/calm_e02deb9476ad4ba661b3e556cec77fac">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="768"></p>
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
+<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">tas</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
+<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">intact</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.19</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.19&nbsp;–&nbsp;0.20</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">deforest</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.52</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.47&nbsp;–&nbsp;0.57</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">14050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.239 / 0.239</td>
+</tr>
+</tbody>
+</table>
+
+
 </div>
 </div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-9_c1efa93f753cb5463d87a024df233b57">
+<div class="cell" data-hash="temperature_cache/html/calmcor_664b0e663ecf2909fbbb7360f6e39111">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="768"></p>
+<p><img src="temperature_files/figure-html/calmcor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-10_05e65ebd0a6e90ed0c3db5fb409dd639">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call: spautolm(formula = tasmax ~ 0 + intact + degraded + deforested, 
-    data = data_test, listw = nb2listw(data_adj, zero.policy = TRUE), 
-    family = "CAR")
-
-Residuals:
-        Min          1Q      Median          3Q         Max 
--5.7218e-01 -1.3135e-02 -9.8768e-05  1.3996e-02  2.6436e-01 
-
-Coefficients: 
-             Estimate Std. Error z value  Pr(&gt;|z|)
-intact      0.0379582  0.0092026  4.1247 3.712e-05
-degraded   -0.0210767  0.0158073 -1.3334    0.1824
-deforested -0.0035907  0.0117278 -0.3062    0.7595
-
-Lambda: 0.99986 LR test value: 9206.6 p-value: &lt; 2.22e-16 
-Numerical Hessian standard error of lambda: 2.7937e-05 
-
-Log likelihood: 3364.393 
-ML residual variance (sigma squared): 0.0011584, (sigma: 0.034035)
-Number of observations: 1838 
-Number of parameters estimated: 5 
-AIC: -6718.8</code></pre>
-</div>
-</div>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-11_df132e963819fcc61398b0982a5ad207">
+</section>
+<section id="spatial-regressions" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-regressions">Spatial regressions</h2>
+<p>To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (spNNGP, Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes, see note below). We found no significant effect of deforestation on temperature accounting for spatial autoccorelation.</p>
+<div class="cell" data-hash="temperature_cache/html/srcatrace_e89e5dd085176656f5e29f4a95cd9408">
 <div class="cell-output-display">
-<p><img src="temperature_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="768"></p>
+<p><img src="temperature_files/figure-html/srcatrace-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
+<div class="cell" data-hash="temperature_cache/html/srcapost_2cab963167efd57f2e8154a8d30d044c">
+<div class="cell-output-display">
+<p><img src="temperature_files/figure-html/srcapost-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="spatial-methods" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-methods">Spatial methods</h2>
+<p>We explored multiple tool and methods to account for spatial autocorrelation in the regression. Below are listed the different options and the rational of the choice.</p>
+<ul>
+<li>spautolm from spatialreg based on neighbours of dnearneigh from spdep
+<ul>
+<li>this method is based on CAR (could be SAR)</li>
+<li>neighbourhood is defined using the regular matrix based on distance: ‘dnearneigh(data_test[c(“x”, “y”)], 0, 10, longlat = T)’</li>
+<li>neighbourhood can be plotted: ‘plot(data_adj, data_test[c(“x”, “y”)])’</li>
+<li>the regression is straightforward: ‘spautolm(formula, data, listw = nb2listw(data_adj, zero.policy = TRUE), family = “CAR”)’</li>
+<li>the tool quickly saturated RAM, depending on both the number of observation (1,000 start to block) and the number of neighbours per observation (10,000 for 10km)</li>
+</ul></li>
+<li>icar from brms with manual build of distance matrix
+<ul>
+<li>this method is based on CAR (other available)</li>
+<li>distance matrix can be computed as follow: ‘distances &lt;- as.matrix(dist(data_test[c(“x”, “y”)])*(1/0.01)); W &lt;- array(0, c(N, N)); W[distances &lt;= 10] &lt;- 1’</li>
+<li>brms can take advantage of within chain parralelisation, does not overload memory, but might be slow and have convergence issue</li>
+<li>the regression is straightforward: ‘brm(formula + car(W, type = “icar”), data = data_test, data2 = list(W = W), cores = 20)’</li>
+</ul></li>
+<li>spNNGP from spNNGP
+<ul>
+<li>Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes</li>
+<li>neighbourhood does not need to be defined</li>
+<li>does not overload memory and is very fast (can still take a few minutes for a whole dataset of 15,000 observations)</li>
+<li>the regression is less straightforward, see code above</li>
+<li>the model only use one chain and post-warmup convergence is questionable despite high acceptance rate</li>
+</ul></li>
+<li>CAR can be manually implemented in stan using multi_normal_prec but seems very slow</li>
+</ul>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
@@ -563,7 +571,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./forest.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Forest</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Deforestation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

@@ -1,6 +1,6 @@
 # Introduction {.unnumbered}
 
-My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red). We will work at multiple scales including from smallest to largest: (i) Capricho, (ii) Guiavare, and (iii) Guiavare, Caquetá, and Guainía (eventually the remaining Amazonian states from Colombia could be added). Unfortunately, only two weather stations data are available for the Amazon on the daily data of the [Global Historical Climatology Network](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily), and they are far away from our study regions (but could still be used for a bit of validation of remotely sensed products).
+My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red). We will work at two scales: Capricho & Colombian Amazon. Unfortunately, only two weather stations data are available for the Amazon on the daily data of the [Global Historical Climatology Network](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily), and they are far away from our study regions (but could still be used for a bit of validation of remotely sensed products).
 
 ```{r setup}
 #| include: false
@@ -44,17 +44,4 @@ ggplot() +
   theme_bw() +
   scale_fill_manual("", values = c("red", "darkgreen")) +
   scale_color_discrete("")
-```
-
-```{r weather}
-list.files("data", pattern = ".csv", full.names = TRUE) %>% 
-  lapply(vroom::vroom) %>% 
-  bind_rows() %>% 
-  select(-ends_with("_ATTRIBUTES")) %>% 
-  gather(variable, value, -STATION, -DATE, -LATITUDE, -LONGITUDE, -ELEVATION, -NAME) %>% 
-  ggplot(aes(DATE, value/10, col = NAME)) +
-  geom_line() +
-  facet_wrap(~ variable, scales = "free") +
-  theme_bw() +
-  theme(legend.position = "bottom", axis.title = element_blank())
 ```

@@ -8,7 +8,6 @@ fileout = snakemake.output[0]
 
 # test
 filein = "results/limits/limits.shp"
-# fileout = "results/data/modis_area.nc"
 
 # libs
 import geopandas as gp
@@ -53,28 +52,22 @@ ds2["LST_Day_1km"].values = ds2["LST_Day_1km"].values * 0.02 - 273.15 # scale fa
 # indices
 ds_tas = ds2.groupby("time.year").mean()
 ds_tas = ds_tas.rename({"LST_Day_1km": "tas"})
-ds_tasmin = ds2.groupby("time.year").min("time")
-ds_tasmin = ds_tasmin.rename({"LST_Day_1km": "tasmin"})
-ds_tasmax = ds2.groupby("time.year").max("time")
-ds_tasmax = ds_tasmax.rename({"LST_Day_1km": "tasmax"})
-ds_all = xr.merge([ds_tas, ds_tasmax, ds_tasmin])
-ds_all = ds_all.transpose('year', 'lat', 'lon')
-
+ds_tas = ds_tas.transpose('year', 'lat', 'lon')
+# ds_tasmin = ds2.groupby("time.year").min("time")
+# ds_tasmin = ds_tasmin.rename({"LST_Day_1km": "tasmin"})
+# ds_tasmax = ds2.groupby("time.year").max("time")
+# ds_tasmax = ds_tasmax.rename({"LST_Day_1km": "tasmax"})
+# ds_all = xr.merge([ds_tas, ds_tasmax, ds_tasmin])
+# ds_all = ds_all.transpose('year', 'lat', 'lon')
 # import matplotlib.pyplot as plt
 # ds_all.sel(year=2001).tas.plot()
 # plt.show()
-
-# regid
-regridder = xe.Regridder(ds_all, ds_out, "bilinear")
-ds_r = regridder(ds_all, keep_attrs=True)
-# ds_r.to_netcdf(fileout1)
-ds_r.to_netcdf("results/data/modis_indices.nc")
+regridder = xe.Regridder(ds_tas, ds_out, "bilinear")
+ds_r = regridder(ds_tas, keep_attrs=True)
+ds_r.to_netcdf("results/data/modis_indices_amazon.nc")
 
 # anomalies
-ds_anom = ds_all.sel(year=slice(2018, 2020)).mean("year") -  ds_all.sel(year=slice(2001, 2003)).mean("year")
-
-# regid
+ds_anom = ds_tas.sel(year=slice(2020, 2022)).mean("year") -  ds_tas.sel(year=slice(2001, 2003)).mean("year")
 regridder = xe.Regridder(ds_anom, ds_out, "bilinear")
 ds_r = regridder(ds_anom, keep_attrs=True)
-# ds_r.to_netcdf(fileout2)
-ds_r.to_netcdf("results/data/modis_anomalies.nc")
+ds_r.to_netcdf("results/data/modis_anomalies_amazon.nc")

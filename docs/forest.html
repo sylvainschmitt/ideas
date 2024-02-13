@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>IDEAS - Forest</title>
+<title>IDEAS - Deforestation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -62,6 +62,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -74,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./forest.html">Forest</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./forest.html">Deforestation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -108,7 +110,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./forest.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Forest</span></a>
+ <span class="menu-text">Deforestation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -121,12 +123,6 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="./precipitation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Precipitation</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./large.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Colombian Amazon</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -168,8 +164,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#all" id="toc-all" class="nav-link active" data-scroll-target="#all">All</a></li>
-  <li><a href="#non-null" id="toc-non-null" class="nav-link" data-scroll-target="#non-null">Non null</a></li>
+  <li><a href="#colombian-amazon" id="toc-colombian-amazon" class="nav-link active" data-scroll-target="#colombian-amazon">Colombian Amazon</a></li>
+  <li><a href="#capricho" id="toc-capricho" class="nav-link" data-scroll-target="#capricho">Capricho</a></li>
   </ul>
 </nav>
     </div>
@@ -178,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Forest</h1>
+<h1 class="title">Deforestation</h1>
 </div>
 
 
@@ -193,50 +189,32 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2001 and 2020 at 30-m and yearly resolutions. We focused on pixels categorized as undisturbed forest in 2001 and assessed if they were (1) undisturbed, (2) degraded or (3) deforested in 2020. We aggregated the resulting map to 0.01-degree by computing the percentage of degraded and deforested pixels.</p>
-<section id="all" class="level2">
-<h2 class="anchored" data-anchor-id="all">All</h2>
-<div class="cell" data-hash="forest_cache/html/deforest2021g_c73cffbb23d243428a633512a8caaa5b">
+<p>We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2000 and 2022 at 30-m and yearly resolutions.</p>
+<section id="colombian-amazon" class="level2">
+<h2 class="anchored" data-anchor-id="colombian-amazon">Colombian Amazon</h2>
+<p>We focused on pixels categorized as undisturbed forest in 2001 and deforested in 2022. We aggregated the deforestation information to 0.01-degree (~1km) by calculating the deforested surface in <span class="math inline">\(km^2\)</span>. Deforestation is more prevalent in the North-West deforestation front.</p>
+<div class="cell" data-hash="forest_cache/html/tmfcadatafig_abcb88f416de4d29fff3233872c2a118">
 <div class="cell-output-display">
-<p><img src="forest_files/figure-html/deforest2021g-1.png" class="img-fluid" width="768"></p>
+<p><img src="forest_files/figure-html/tmfcadatafig-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="forest_cache/html/degrad2020g_049e5dc37d8a94f561d7c89238e86c97">
+<div class="cell" data-hash="forest_cache/html/tmfcadatahist_ac56a2b86feb09236e7accdfbdefcbda">
 <div class="cell-output-display">
-<p><img src="forest_files/figure-html/degrad2020g-1.png" class="img-fluid" width="768"></p>
+<p><img src="forest_files/figure-html/tmfcadatahist-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="forest_cache/html/histg_1b722bf6674b2c9320968c4b9a96d840">
+<div class="cell" data-hash="forest_cache/html/tmfcadatacor_bad5f91ff41223c9ef1aecbe5aff67c8">
 <div class="cell-output-display">
-<p><img src="forest_files/figure-html/histg-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="forest_cache/html/tmfcor_31aa79f37dd82de3317b58273807cbe1">
-<div class="cell-output-display">
-<p><img src="forest_files/figure-html/tmfcor-1.png" class="img-fluid" width="768"></p>
+<p><img src="forest_files/figure-html/tmfcadatacor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="non-null" class="level2">
-<h2 class="anchored" data-anchor-id="non-null">Non null</h2>
-<div class="cell" data-hash="forest_cache/html/deforest2021_167da02e0faac52cde269f5860315a7c">
+<section id="capricho" class="level2">
+<h2 class="anchored" data-anchor-id="capricho">Capricho</h2>
+<p>We focused on pixels categorized as deforested and cumulated their surface in <span class="math inline">\(km^2\)</span> between 2000 and 2022.</p>
+<div class="cell" data-hash="forest_cache/html/tmfcpfig_8c2c17a44a3a4fb95e03490e54f809a2">
 <div class="cell-output-display">
-<p><img src="forest_files/figure-html/deforest2021-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="forest_cache/html/degrad2020_72b50bdb132757e6c561de33978461b4">
-<div class="cell-output-display">
-<p><img src="forest_files/figure-html/degrad2020-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="forest_cache/html/hist_9f23bb67079de30336dd43ceb1726b47">
-<div class="cell-output-display">
-<p><img src="forest_files/figure-html/hist-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="forest_cache/html/tmfcorz_9d4d3d86f646e24a45cee615e4a89673">
-<div class="cell-output-display">
-<p><img src="forest_files/figure-html/tmfcorz-1.png" class="img-fluid" width="768"></p>
+<p><img src="forest_files/figure-html/tmfcpfig-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 

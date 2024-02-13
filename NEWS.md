@@ -1,3 +1,4 @@
+-   ideas 0.1.0.9012: cleaned book and script + capricho pr vars
 -   ideas 0.1.0.9011: summarised colombian amazon
 -   ideas 0.1.0.9010: larger pr & tas
 -   ideas 0.1.0.9009: multiple car models

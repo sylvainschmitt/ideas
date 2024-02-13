@@ -6,178 +6,209 @@ rm(list = ls()) ; invisible(gc()) ; set.seed(42)
 library(tidyverse)
 library(terra)
 library(sf)
-library(spdep)
-library(spatialreg)
-theme_set(bayesplot::theme_default())
+library(bayesplot)
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
   cache = T, cache.lazy = F)
 ```
 
-We used CHIRPS data downscaled at 0.01-degree resolution with daily precipitation accumulation. Monthly precipitation precipitation changes were then calculated by (1) summing precipitation for each month of every year, (2) computing the monthly means over two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability.
+## Capricho
 
-```{r climdat}
-data <- rast("results/data/chirps_month.nc") %>% 
+We used CHIRPS data at 0.05-degree resolution with pentad (5-days) precipitation accumulation.
+
+```{r}
+data_r <- rast("results/data/chirps_indices_capricho.nc")
+data <- data_r %>% 
   as.data.frame() %>% 
-  gather(time, value) %>% 
-  group_by(time) %>% 
-  summarise(l = quantile(value, 0.025, na.rm = TRUE), 
-            m = mean(value, na.rm = TRUE), 
-            h = quantile(value, 0.975, na.rm = TRUE)) %>% 
-  mutate(time = time(rast("results/data/chirps_month.nc")))
+  gather(pentad, pr) %>% 
+  group_by(pentad) %>% 
+    summarise(l = quantile(pr, 0.025, na.rm = TRUE), 
+            m = mean(pr, na.rm = TRUE), 
+            h = quantile(pr, 0.975, na.rm = TRUE)) %>% 
+  mutate(time = time(data_r))
 ```
 
-```{r climvaryear}
-ggplot(data, aes(time, m)) +
-  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
-  geom_line() +
-  geom_point() +
-  theme_bw() +
-  theme(axis.title = element_blank())
-```
+### Pentad
 
-```{r climvarmonth}
+```{r}
 data %>% 
-  mutate(month = month(time), year = as.factor(year(time))) %>%
-  ggplot(aes(month, m, col = year, fill = year)) +
+  ggplot(aes(time, m)) +
   geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
   geom_line() +
   geom_point() +
   theme_bw() +
-  theme(axis.title = element_blank())
+  xlab("") + ylab("Precipitation (mm/5-days)") +
+  ggtitle("Pentad (5 days) variations in Capricho")
 ```
 
-```{r climvarmonthmean}
+```{r}
 data %>% 
-  mutate(month = month(time)) %>%
-  group_by(month) %>% 
-  mutate_all(mean) %>% 
-  ggplot(aes(month, m)) +
-  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
-  geom_line() +
-  geom_point() +
+  mutate(year = year(time)) %>% 
+  mutate(week = week(time)) %>% 
+  ggplot(aes(week, m)) +
+  geom_line(aes(group = year, col = year)) +
   theme_bw() +
-  theme(axis.title = element_blank()) +
-  geom_vline(xintercept = c(1, 6))
+  geom_smooth(col = "red") +
+  scale_color_viridis_c() +
+  xlab("") + ylab("Precipitation (mm/5-days)") +
+  ggtitle("Pentad (5 days) variations in Capricho") +
+  scale_x_continuous(breaks = c(1, 5, 9, 13, 18, 22, 26, 31, 35, 40, 44, 48),
+                   labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
 ```
 
-```{r climvar}
-rast("results/data/chirps_indices.nc") %>% 
-  as.data.frame() %>% 
-  gather(varyear, value) %>% 
-  group_by(varyear) %>% 
-  summarise(l = quantile(value, 0.025, na.rm = TRUE), 
-            m = mean(value, na.rm = TRUE), 
-            h = quantile(value, 0.975, na.rm = TRUE)) %>% 
-  separate(varyear, c("variable", "year"), "_year=", convert = T) %>% 
-  ggplot(aes(year, m, col = variable, fill = variable)) +
-  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
+### Biweek
+
+```{r}
+floor_biweek <- function(full) 
+  as_date(paste0(year(full), "-", month(full), "-", ifelse(day(full) > 15, 15, 1)))
+data %>% 
+  group_by(time = floor_biweek(time)) %>% 
+  summarise(pr = sum(m)) %>% 
+  ggplot(aes(time, pr)) +
   geom_line() +
-  geom_point() +
   theme_bw() +
-  theme(axis.title = element_blank()) +
-  facet_wrap(~ variable, nrow = 3, scales = "free_y") +
-  geom_vline(xintercept = c(2001, 2003, 2018, 2020))
+  xlab("") + ylab("Precipitation (mm/.5-month)") +
+  ggtitle("Biweekly variations in Capricho") 
 ```
+
+```{r}
+floor_biweek <- function(full) 
+  as_date(paste0(year(full), "-", month(full), "-", ifelse(day(full) > 15, 15, 1)))
+data %>% 
+  group_by(time = floor_biweek(time)) %>% 
+  summarise(pr = sum(m)) %>% 
+  mutate(year = year(time)) %>% 
+  mutate(week = week(time)) %>% 
+  ggplot(aes(week, pr)) +
+  geom_line(aes(group = year, col = year)) +
+  theme_bw() +
+  geom_smooth(col = "red") +
+  xlab("") + ylab("Precipitation (mm/.5-month)") +
+  ggtitle("Biweekly variations in Capricho") +
+  scale_color_viridis_c() +
+  scale_x_continuous(breaks = c(1, 5, 9, 13, 18, 22, 26, 31, 35, 40, 44, 48),
+                   labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+```
+
+### Month
+
+```{r}
+data %>% 
+  group_by(time = floor_date(time, "month")) %>% 
+  summarise(pr = sum(m)) %>% 
+  ggplot(aes(time, pr)) +
+  geom_line() +
+  theme_bw() +
+  xlab("") + ylab("Precipitation (mm/month)") +
+  ggtitle("Monthly variations in Capricho") 
+```
+
+```{r}
+data %>% 
+  group_by(time = floor_date(time, "month")) %>% 
+  summarise(pr = sum(m)) %>% 
+  mutate(year = year(time)) %>% 
+  mutate(week = week(time)) %>% 
+  ggplot(aes(week, pr)) +
+  geom_line(aes(group = year, col = year)) +
+  theme_bw() +
+  geom_smooth(col = "red") +
+  xlab("") + ylab("Precipitation (mm/month)") +
+  ggtitle("Monthly variations in Capricho") +
+  scale_color_viridis_c() +
+  scale_x_continuous(breaks = c(1, 5, 9, 13, 18, 22, 26, 31, 35, 40, 44, 48),
+                   labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+```
+
+### Year
+
+```{r}
+data %>% 
+  group_by(time = floor_date(time, "year")) %>% 
+  summarise(pr = sum(m)) %>% 
+  ggplot(aes(time, pr)) +
+  geom_line() +
+  theme_bw() +
+  xlab("") + ylab("Precipitation (mm/year)") +
+  ggtitle("Yearly variations in Capricho") +
+  geom_smooth(col = "red")
+```
+
+```{r}
+data %>% 
+  group_by(time = floor_date(time, "month")) %>% 
+  summarise(pr = sum(m)) %>% 
+  group_by(time = floor_date(time, "year")) %>% 
+  summarise(delta_pr = quantile(pr, 0.95) - quantile(pr, 0.05)) %>% 
+  ggplot(aes(time, delta_pr)) +
+  geom_line() +
+  theme_bw() +
+  xlab("") + ylab("Yearly variations of monthly precipitation (mm/year)") +
+  ggtitle("Yearly variability in Capricho") +
+  geom_smooth(col = "red")
+```
+
+## Colombian Amazon
+
+We used CHIRPS data downscaled at 0.01-degree resolution with pentad (5-days) precipitation accumulation. Yearly precipitation changes were then calculated by computing the monthly means over two periods at the end (2020 to 2022) and start (2000 to 2002) of the study period. Using 3-y averages reduces the influences of climate variability.
 
 ```{r data}
-clim_r <- rast("results/data/chirps_anomalies.nc")
-area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
-  st_set_crs(crs(clim_r))
-deforest <- rast("results/data/tmf_deforested_2020.tif") %>% 
-  resample(clim_r) %>% 
-  crop(area) %>% 
-  mask(area)
-degrad <- rast("results/data/tmf_degraded_2020.tif") %>% 
-  resample(clim_r) %>% 
-  crop(area) %>% 
-  mask(area)
-clim_r <- clim_r %>% 
-  crop(area) %>% 
-  mask(area)
-data <- as.data.frame(clim_r, xy = TRUE) %>% 
-  left_join(as.data.frame(deforest, xy = TRUE)) %>% 
-  rename(deforested = Dec2020) %>% 
-  left_join(as.data.frame(degrad, xy = TRUE)) %>% 
-  rename(degraded = Dec2020) %>% 
-  mutate(degraded = ifelse(degraded < 0.05, 0, degraded)) %>% 
-  na.omit()
-data_nn <- data %>% 
-  filter(deforested + degraded > 0)
+#| include: false
+pr_ind <- rast("results/data/chirps_indices_amazon.nc")
+pr <- rast("results/data/chirps_anomalies_amazon.nc")
+deforest <- rast("results/data/tmf_deforested_2022_2000_amzaonia.tif")
+data <- lapply(deforest, as.data.frame, xy = T) %>% 
+  bind_rows() %>% 
+  left_join(as.data.frame(pr, xy = TRUE)) %>% 
+  na.omit() %>% 
+  mutate(intact = 1)
 ```
 
-```{r climplot}
+```{r ca2022}
 ggplot() +
-  tidyterra::geom_spatraster(data = clim_r[["pr"]]) +
+  tidyterra::geom_spatraster(data = pr_ind[[22]]) +
   theme_bw() +
-  scale_fill_viridis_c(expression(delta~P), na.value = NA) +
-  ggtitle("Guiavare total Precipitation anomalies", 
-          "2018-2020 versus 2001-2003 from CHIRPS")
+  scale_fill_viridis_c("mm", na.value = NA) +
+  ggtitle("Precipitaiton 2022")
 ```
 
-## All
-
-```{r}
-data2 <- sample_n(data, 1000)
-cor1 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$pr,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "pr")
-cor2 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$pr_jan,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "pr_jan")
-cor3 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$pr_jun,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "pr_jun")
-bind_rows(cor1, cor2, cor3) %>% 
-  ggplot(aes(x = dist.class*100, y = coef, col = variable)) + 
-  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
-  geom_hline(yintercept = 0) +
+```{r caanom}
+ggplot() +
+  tidyterra::geom_spatraster(data = pr) +
   theme_bw() +
-  xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
+  scale_fill_viridis_c("°C", na.value = NA) +
+  ggtitle("Precipitation anomalies", "2000:2002 vs 2020:2022")
 ```
 
-```{r}
-data_test <- data %>% 
-  sample_n(1000) %>%
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-plot(data_adj, data_test[c("x", "y")])
-```
+### Comparisons
 
-```{r}
-data_test <- data %>% 
-  sample_n(10000) %>% 
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-```
+Comparing deforestation surfaces to climate anomalies seems to indicate a decrease in precipitation with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.
 
-```{r}
+```{r cacomp}
 data %>% 
-  gather(climate, value, -x, -y, -deforested, -degraded) %>% 
-  gather(type, percent, -x, -y, -climate, -value) %>% 
-  ggplot(aes(percent, value, col = climate)) +
-  geom_point(alpha = 0.1) +
+  mutate(deforest = cut(deforest, breaks = seq(0, 1.3, by = 0.1),
+                              labels = seq(0, 1.2, by = 0.1)+0.05)) %>% 
+  ggplot(aes(deforest, precipitation)) +
+  geom_boxplot() +
   theme_bw() +
-  facet_wrap(~ type, nrow = 2) +
-  geom_smooth(method = "lm")
+  geom_smooth(aes(x = as.numeric(deforest))) +
+  xlab("Deforestation surface (km2, 2000-2022)") +
+  ylab("Yearly anomalies of precipitation")
 ```
 
-```{r }
-reg <- spautolm(pr ~ 0 + intact + degraded + deforested, 
-                data = data_test, 
-                listw = nb2listw(data_adj, zero.policy = TRUE), 
-                family = "CAR")
-summary(reg)
+### Linear regressions
+
+Classic linear regression without accounting for spatial autocorrelation found a general and significant decrease in precipitation (-240mm/year) and a significant decrease in precipitation (-81mm/year) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.
+
+```{r calm}
+reg <- lm(precipitation ~ 0 + intact + deforest, data)
+sjPlot::tab_model(reg)
 ```
 
-```{r }
-data2 <- data_test
-data2$res <- residuals(reg)
-data2 <- sample_n(data2, 1000)
+```{r calmcor}
+data2 <- data
+data2$res <- residuals(reg) 
+data2 <- data2 %>% sample_n(1000)
 cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
                    method = "Moran", nbclass = 30) %>% 
     as.data.frame()
@@ -187,129 +218,41 @@ cor %>%
   geom_hline(yintercept = 0) +
   theme_bw() +
   xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
+  scale_x_log10() +
+  ylim(-1, 1) +
+  ggtitle("Residuals spatial auto-correlation")
 ```
 
-## Non null
+### Spatial regressions
 
-```{r}
-data_test <- data_nn %>% 
-  sample_n(1000) %>%
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-plot(data_adj, data_test[c("x", "y")])
-```
+To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (spNNGP, Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes, see note below). We found only a small significant effect of deforestation on precipitation decrease accounting for spatial autocorrelation (-3mm/year).
 
-```{r}
-data_test <- data_nn %>%
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-```
-
-```{r}
-data_nn %>% 
-  gather(climate, value, -x, -y, -deforested, -degraded) %>% 
-  gather(type, percent, -x, -y, -climate, -value) %>% 
-  ggplot(aes(percent, value, col = climate)) +
-  geom_point(alpha = 0.1) +
-  theme_bw() +
-  facet_wrap(~ type, nrow = 2) +
-  geom_smooth(method = "lm")
-```
-
-```{r }
-reg <- spautolm(pr ~ 0 + intact + degraded + deforested, 
-                data = data_test, 
-                listw = nb2listw(data_adj, zero.policy = TRUE), 
-                family = "CAR")
-summary(reg)
-```
-
-```{r }
-data2 <- data_test
-data2$res <- residuals(reg)
-data2 <- sample_n(data2, 1000)
-cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
-                   method = "Moran", nbclass = 30) %>% 
-    as.data.frame()
-cor %>% 
-  ggplot(aes(x = dist.class*100, y = coef)) + 
-  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
-  geom_hline(yintercept = 0) +
-  theme_bw() +
-  xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
-```
-
-## Non null - spNNGP
-
-```{r}
-library(bayesplot)
+```{r srca}
+#| eval: false
 library(spNNGP)
-rescale <- function(x) (x - mean(x))/(quantile(x,0.975) - quantile(x,0.025))
-sim.s <- spNNGP(formula = pr ~ rescale(degraded) + rescale(deforested),
-                data = data_nn,
-                coords = data_nn[c("x", "y")], 
+sr <- spNNGP(formula = precipitation ~ 0 + intact + deforest,
+                data = data,
+                coords = data[c("x", "y")], 
                 starting = list("phi" = 3 / 0.5, "sigma.sq" = 1, "tau.sq" = 1),
                 tuning = list("phi" = 0.2), 
-                priors = list("phi.Unif" = c(3 / 1, 3 / 0.1), "sigma.sq.IG" = c(2, 1), "tau.sq.IG" = c(2, 1)), 
+                priors = list("phi.Unif" = c(3 / 1, 3 / 0.1), 
+                              "sigma.sq.IG" = c(2, 1), "tau.sq.IG" = c(2, 1)), 
                 cov.model = "exponential",
                 n.samples = 2000, 
                 n.neighbors = 10, method = "latent", 
-                ord = order(data_nn[, "x"] + data_nn[, "y"]),
-                n.omp.threads = 4, n.report = 1000, fit.rep = TRUE,
+                n.omp.threads = 20, n.report = 1000, fit.rep = TRUE,
                 sub.sample = list(start = 1000), return.neighbor.info = TRUE)
+save(sr, file = "save/pr.Rdata")
 ```
 
-```{r}
-summary(sim.s)
+```{r srcaload}
+load("save/pr.Rdata")
 ```
 
-```{r}
-mcmc_trace(sim.s$p.beta.samples, n_warmup = 1000)
+```{r srcatrace}
+mcmc_trace(sr$p.beta.samples, n_warmup = 1000) 
 ```
 
-```{r}
-mcmc_dens(sim.s$p.beta.samples[1001:2000,])
-```
-
-```{r }
-data2 <- data_test
-data2$res <- residuals(sim.s)$residuals.quantiles[,1]
-data2 <- sample_n(data2, 1000)
-cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
-                   method = "Moran", nbclass = 30) %>% 
-    as.data.frame()
-cor %>% 
-  ggplot(aes(x = dist.class*100, y = coef)) + 
-  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
-  geom_hline(yintercept = 0) +
-  theme_bw() +
-  xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
-```
-
-## Non null - brms
-
-```{r}
-library(brms)
-library(bayesplot)
-data_test <- data_nn %>% 
-  sample_n(1000) %>%
-  mutate(intact = 1)
-N <- nrow(data_test)
-distances <- as.matrix(dist(data_test[c("x", "y")])*(1/0.01))
-W <- array(0, c(N, N))
-W[distances <= 10] <- 1
-fit <- brm(pr ~ 0 + intact + degraded + deforested + car(W, type = "icar"),
-           data = data_test, data2 = list(W = W), cores = 20)
-summary(fit)
-```
-
-```{r}
-mcmc_trace(fit, regex_pars = c("intact", "de"))
-```
-
-```{r}
-mcmc_hist(fit, regex_pars = c("intact", "de"))
+```{r srcapost}
+mcmc_hist(sr$p.beta.samples[1001:2000,])
 ```

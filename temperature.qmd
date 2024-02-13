@@ -6,18 +6,29 @@ rm(list = ls()) ; invisible(gc()) ; set.seed(42)
 library(tidyverse)
 library(terra)
 library(sf)
-library(spdep)
-library(spatialreg)
+library(bayesplot)
 theme_set(bayesplot::theme_default())
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
   cache = T, cache.lazy = F)
 ```
 
-Following @butt2023, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed both variations in mean temperature (tas), maximum temperature (tasmax), and minimum temperature (tasmin).
+```{r data}
+#| include: false
+tas_ind <- rast("results/data/modis_indices_amazon.nc")
+tas <- rast("results/data/modis_anomalies_amazon.nc")
+deforest <- rast("results/data/tmf_deforested_2022_2000_amzaonia.tif")
+data <- lapply(deforest, as.data.frame, xy = T) %>% 
+  bind_rows() %>% 
+  left_join(as.data.frame(tas, xy = TRUE)) %>% 
+  na.omit() %>% 
+  mutate(intact = 1)
+```
 
-```{r climvar}
-rast("results/data/modis_indices.nc") %>% 
+Following @butt2023, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed variations in mean temperature (tas). Monthly or seasonal indices could be used at a later stage, but we must be wary of seasonal variations across space. Daily extrema could also be used.
+
+```{r yearly}
+tas_ind %>% 
   as.data.frame() %>% 
   gather(varyear, value) %>% 
   group_by(varyear) %>% 
@@ -31,111 +42,54 @@ rast("results/data/modis_indices.nc") %>%
   geom_point() +
   theme_bw() +
   theme(axis.title = element_blank()) +
-  geom_vline(xintercept = c(2001, 2003, 2018, 2020))
+  geom_vline(xintercept = c(2001, 2003, 2020, 2022))
 ```
 
-```{r data}
-clim_r <- rast("results/data/modis_anomalies.nc")
-area <- st_read("results/area/Guaviare/Guaviare.shp", quiet=T) %>% 
-  st_set_crs(crs(clim_r))
-deforest <- rast("results/data/tmf_deforested_2020.tif") %>% 
-  resample(clim_r) %>% 
-  crop(area) %>% 
-  mask(area)
-degrad <- rast("results/data/tmf_degraded_2020.tif") %>% 
-  resample(clim_r) %>% 
-  crop(area) %>% 
-  mask(area)
-clim_r <- clim_r %>% 
-  crop(area) %>% 
-  mask(area)
-data <- as.data.frame(clim_r, xy = TRUE) %>% 
-  left_join(as.data.frame(deforest, xy = TRUE)) %>% 
-  rename(deforested = Dec2020) %>% 
-  left_join(as.data.frame(degrad, xy = TRUE)) %>% 
-  rename(degraded = Dec2020) %>% 
-  mutate(degraded = ifelse(degraded < 0.05, 0, degraded)) %>% 
-  na.omit()
-data_nn <- data %>% 
-  filter(deforested + degraded > 0) 
-```
-
-```{r climplot}
+```{r ca2022}
 ggplot() +
-  tidyterra::geom_spatraster(data = clim_r[["tas"]]) +
+  tidyterra::geom_spatraster(data = tas_ind[[22]]) +
   theme_bw() +
-  scale_fill_viridis_c(expression(delta~T), na.value = NA) +
-  ggtitle("Guiavare January mean Temperature anomalies", 
-          "2018-2020 versus 2001-2003 from MODIS MOD11A2 LST")
+  scale_fill_viridis_c("°C", na.value = NA) +
+  ggtitle("Temperature 2022")
 ```
 
-## All
-
-```{r}
-data2 <- sample_n(data, 1000)
-cor1 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$tas,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "tas")
-cor2 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$tasmax,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "tasmax")
-cor1 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$tas,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "tas")
-cor3 <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$tasmin,
-                   method = "Moran", nbclass = 30) %>% 
-  as.data.frame() %>% 
-  mutate(variable = "tasmin")
-bind_rows(cor1, cor2, cor3) %>% 
-  ggplot(aes(x = dist.class*100, y = coef, col = variable)) + 
-  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
-  geom_hline(yintercept = 0) +
+```{r caanom}
+ggplot() +
+  tidyterra::geom_spatraster(data = tas) +
   theme_bw() +
-  xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
+  scale_fill_viridis_c("°C", na.value = NA) +
+  ggtitle("Temperature anomalies", "2001:2003 vs 2000:2022")
 ```
 
-```{r}
-data_test <- data %>% 
-  sample_n(1000) %>%
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-plot(data_adj, data_test[c("x", "y")])
-```
+## Comparisons
 
-```{r}
-data_test <- data %>% 
-  sample_n(10000) %>% 
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-```
+Comparing deforestation surfaces to climate anomalies seems to indicate an increase in temperature with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.
 
-```{r}
+```{r cacomp}
 data %>% 
-  gather(climate, value, -x, -y, -deforested, -degraded) %>% 
-  gather(type, percent, -x, -y, -climate, -value) %>% 
-  ggplot(aes(percent, value, col = climate)) +
-  geom_point(alpha = 0.1) +
+  mutate(deforest = cut(deforest, breaks = seq(0, 1.3, by = 0.1),
+                              labels = seq(0, 1.2, by = 0.1)+0.05)) %>% 
+  ggplot(aes(deforest, tas)) +
+  geom_boxplot() +
   theme_bw() +
-  facet_wrap(~ type, nrow = 2) +
-  geom_smooth(method = "lm")
+  geom_smooth(aes(x = as.numeric(deforest))) +
+  xlab("Deforestation surface (km2, 2000-2022)") +
+  ylab("January anomalies of mean temperature at surface")
 ```
 
-```{r }
-reg <- spautolm(tasmax ~ 0 + intact + degraded + deforested, 
-                data = data_test, 
-                listw = nb2listw(data_adj, zero.policy = TRUE), 
-                family = "CAR")
-summary(reg)
+## Linear regressions
+
+Classic linear regression without accounting for spatial autocorrelation found a general and significant increase in temperature (+0.19°C) and a significant increase in temperature (+0.52°C) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.
+
+```{r calm}
+reg <- lm(tas ~ 0 + intact + deforest, data)
+sjPlot::tab_model(reg)
 ```
 
-```{r }
-data2 <- data_test
-data2$res <- residuals(reg)
-data2 <- sample_n(data2, 1000)
+```{r calmcor}
+data2 <- data
+data2$res <- residuals(reg) 
+data2 <- data2 %>% sample_n(1000)
 cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
                    method = "Moran", nbclass = 30) %>% 
     as.data.frame()
@@ -145,56 +99,64 @@ cor %>%
   geom_hline(yintercept = 0) +
   theme_bw() +
   xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
+  scale_x_log10() +
+  ylim(-1, 1) +
+  ggtitle("Residuals spatial auto-correlation")
 ```
 
-## Non null
+## Spatial regressions
 
-```{r}
-data_test <- data_nn %>% 
-  sample_n(1000) %>%
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
-plot(data_adj, data_test[c("x", "y")])
+To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (spNNGP, Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes, see note below). We found no significant effect of deforestation on temperature accounting for spatial autoccorelation.
+
+```{r srca}
+#| eval: false
+library(spNNGP)
+sr <- spNNGP(formula = tas ~ 0 + intact + deforest,
+                data = data,
+                coords = data[c("x", "y")], 
+                starting = list("phi" = 3 / 0.5, "sigma.sq" = 1, "tau.sq" = 1),
+                tuning = list("phi" = 0.2), 
+                priors = list("phi.Unif" = c(3 / 1, 3 / 0.1), 
+                              "sigma.sq.IG" = c(2, 1), "tau.sq.IG" = c(2, 1)), 
+                cov.model = "exponential",
+                n.samples = 2000, 
+                n.neighbors = 10, method = "latent", 
+                n.omp.threads = 20, n.report = 1000, fit.rep = TRUE,
+                sub.sample = list(start = 1000), return.neighbor.info = TRUE)
+save(sr, file = "save/tas.Rdata")
 ```
 
-```{r}
-data_test <- data_nn %>%
-  mutate(intact = 1)
-data_adj <- dnearneigh(data_test[c("x", "y")], 0, 10, longlat = T)
+```{r srcaload}
+load("save/tas.Rdata")
 ```
 
-```{r}
-data_nn %>% 
-  gather(climate, value, -x, -y, -deforested, -degraded) %>% 
-  gather(type, percent, -x, -y, -climate, -value) %>% 
-  ggplot(aes(percent, value, col = climate)) +
-  geom_point(alpha = 0.1) +
-  theme_bw() +
-  facet_wrap(~ type, nrow = 2) +
-  geom_smooth(method = "lm")
+```{r srcatrace}
+mcmc_trace(sr$p.beta.samples, n_warmup = 1000) 
 ```
 
-```{r }
-reg <- spautolm(tasmax ~ 0 + intact + degraded + deforested, 
-                data = data_test, 
-                listw = nb2listw(data_adj, zero.policy = TRUE), 
-                family = "CAR")
-summary(reg)
+```{r srcapost}
+mcmc_hist(sr$p.beta.samples[1001:2000,])
 ```
 
-```{r }
-data2 <- data_test
-data2$res <- residuals(reg)
-data2 <- sample_n(data2, 1000)
-cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
-                   method = "Moran", nbclass = 30) %>% 
-    as.data.frame()
-cor %>% 
-  ggplot(aes(x = dist.class*100, y = coef)) + 
-  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
-  geom_hline(yintercept = 0) +
-  theme_bw() +
-  xlab("Distance (km)") + ylab("Moran\'s I") +
-  scale_x_log10()
-```
+## Spatial methods
+
+We explored multiple tool and methods to account for spatial autocorrelation in the regression. Below are listed the different options and the rational of the choice.
+
+-   spautolm from spatialreg based on neighbours of dnearneigh from spdep
+    -   this method is based on CAR (could be SAR)
+    -   neighbourhood is defined using the regular matrix based on distance: 'dnearneigh(data_test\[c("x", "y")\], 0, 10, longlat = T)'
+    -   neighbourhood can be plotted: 'plot(data_adj, data_test\[c("x", "y")\])'
+    -   the regression is straightforward: 'spautolm(formula, data, listw = nb2listw(data_adj, zero.policy = TRUE), family = "CAR")'
+    -   the tool quickly saturated RAM, depending on both the number of observation (1,000 start to block) and the number of neighbours per observation (10,000 for 10km)
+-   icar from brms with manual build of distance matrix
+    -   this method is based on CAR (other available)
+    -   distance matrix can be computed as follow: 'distances \<- as.matrix(dist(data_test\[c("x", "y")\])\*(1/0.01)); W \<- array(0, c(N, N)); W\[distances \<= 10\] \<- 1'
+    -   brms can take advantage of within chain parralelisation, does not overload memory, but might be slow and have convergence issue
+    -   the regression is straightforward: 'brm(formula + car(W, type = "icar"), data = data_test, data2 = list(W = W), cores = 20)'
+-   spNNGP from spNNGP
+    -   Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes
+    -   neighbourhood does not need to be defined
+    -   does not overload memory and is very fast (can still take a few minutes for a whole dataset of 15,000 observations)
+    -   the regression is less straightforward, see code above
+    -   the model only use one chain and post-warmup convergence is questionable despite high acceptance rate
+-   CAR can be manually implemented in stan using multi_normal_prec but seems very slow
