@@ -14,138 +14,243 @@ knitr::opts_chunk$set(
 
 ## Capricho
 
-We used CHIRPS data at 0.05-degree resolution with pentad (5-days) precipitation accumulation.
+We used ERA5-Land data at 0.01-degree resolution with hourly precipitation aggregated to the day.
+
+```{r era}
+data <- vroom::vroom("~/Documents/getEra/results/hourly/era5_capricho.csv") %>% 
+  filter(year(date) %in% 2000:2023) %>% 
+  group_by(date = date(date)) %>% 
+  summarise(precipitation = sum(precipitation))
+```
+
+### Day
 
 ```{r}
-data_r <- rast("results/data/chirps_indices_capricho.nc")
-data <- data_r %>% 
-  as.data.frame() %>% 
-  gather(pentad, pr) %>% 
-  group_by(pentad) %>% 
-    summarise(l = quantile(pr, 0.025, na.rm = TRUE), 
-            m = mean(pr, na.rm = TRUE), 
-            h = quantile(pr, 0.975, na.rm = TRUE)) %>% 
-  mutate(time = time(data_r))
+data %>% 
+  ggplot(aes(date, precipitation)) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  xlab("") + ylab("Precipitation (mm/day)")
+```
+
+```{r}
+data %>% 
+  mutate(year = year(date)) %>% 
+  mutate(day = yday(date)) %>% 
+  ggplot(aes(day, precipitation)) +
+  geom_line(aes(group = year, col = year)) +
+  theme_bw() +
+  geom_smooth(col = "red") +
+  scale_color_viridis_c() +
+  xlab("") + ylab("Precipitation (mm/day)") +
+  scale_x_continuous(breaks = yday(as_date(paste0("2001-", 1:12, "-1"))),
+                     labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
 ```
 
 ### Pentad
 
 ```{r}
 data %>% 
-  ggplot(aes(time, m)) +
-  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
+  group_by(date = round_date(date, "5 days")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  ggplot(aes(date, precipitation)) +
   geom_line() +
   geom_point() +
   theme_bw() +
-  xlab("") + ylab("Precipitation (mm/5-days)") +
-  ggtitle("Pentad (5 days) variations in Capricho")
+  xlab("") + ylab("Precipitation (mm/pentad)")
 ```
 
 ```{r}
 data %>% 
-  mutate(year = year(time)) %>% 
-  mutate(week = week(time)) %>% 
-  ggplot(aes(week, m)) +
+  group_by(date = round_date(date, "5 days")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  mutate(year = year(date)) %>% 
+  mutate(day = yday(date)) %>% 
+  ggplot(aes(day, precipitation)) +
   geom_line(aes(group = year, col = year)) +
   theme_bw() +
   geom_smooth(col = "red") +
   scale_color_viridis_c() +
-  xlab("") + ylab("Precipitation (mm/5-days)") +
-  ggtitle("Pentad (5 days) variations in Capricho") +
-  scale_x_continuous(breaks = c(1, 5, 9, 13, 18, 22, 26, 31, 35, 40, 44, 48),
-                   labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+  xlab("") + ylab("Precipitation (mm/pentad)") +
+  scale_x_continuous(breaks = yday(as_date(paste0("2001-", 1:12, "-1"))),
+                     labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
 ```
 
 ### Biweek
 
 ```{r}
-floor_biweek <- function(full) 
-  as_date(paste0(year(full), "-", month(full), "-", ifelse(day(full) > 15, 15, 1)))
 data %>% 
-  group_by(time = floor_biweek(time)) %>% 
-  summarise(pr = sum(m)) %>% 
-  ggplot(aes(time, pr)) +
+  group_by(date = round_date(date, "15 days")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  ggplot(aes(date, precipitation)) +
   geom_line() +
+  geom_point() +
   theme_bw() +
-  xlab("") + ylab("Precipitation (mm/.5-month)") +
-  ggtitle("Biweekly variations in Capricho") 
+  xlab("") + ylab("Precipitation (mm/15-days)")
 ```
 
 ```{r}
-floor_biweek <- function(full) 
-  as_date(paste0(year(full), "-", month(full), "-", ifelse(day(full) > 15, 15, 1)))
 data %>% 
-  group_by(time = floor_biweek(time)) %>% 
-  summarise(pr = sum(m)) %>% 
-  mutate(year = year(time)) %>% 
-  mutate(week = week(time)) %>% 
-  ggplot(aes(week, pr)) +
+  group_by(date = round_date(date, "15 days")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  mutate(year = year(date)) %>% 
+  mutate(day = yday(date)) %>% 
+  ggplot(aes(day, precipitation)) +
   geom_line(aes(group = year, col = year)) +
   theme_bw() +
   geom_smooth(col = "red") +
-  xlab("") + ylab("Precipitation (mm/.5-month)") +
-  ggtitle("Biweekly variations in Capricho") +
   scale_color_viridis_c() +
-  scale_x_continuous(breaks = c(1, 5, 9, 13, 18, 22, 26, 31, 35, 40, 44, 48),
-                   labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+  xlab("") + ylab("Precipitation (mm/15-days)") +
+  scale_x_continuous(breaks = yday(as_date(paste0("2001-", 1:12, "-1"))),
+                     labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
 ```
 
 ### Month
 
 ```{r}
 data %>% 
-  group_by(time = floor_date(time, "month")) %>% 
-  summarise(pr = sum(m)) %>% 
-  ggplot(aes(time, pr)) +
+  group_by(date = round_date(date, "month")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  ggplot(aes(date, precipitation)) +
   geom_line() +
+  geom_point() +
   theme_bw() +
-  xlab("") + ylab("Precipitation (mm/month)") +
-  ggtitle("Monthly variations in Capricho") 
+  xlab("") + ylab("Precipitation (mm/month)")
 ```
 
 ```{r}
 data %>% 
-  group_by(time = floor_date(time, "month")) %>% 
-  summarise(pr = sum(m)) %>% 
-  mutate(year = year(time)) %>% 
-  mutate(week = week(time)) %>% 
-  ggplot(aes(week, pr)) +
+  group_by(date = round_date(date, "month")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  mutate(year = year(date)) %>% 
+  mutate(day = yday(date)) %>% 
+  ggplot(aes(day, precipitation)) +
   geom_line(aes(group = year, col = year)) +
   theme_bw() +
   geom_smooth(col = "red") +
-  xlab("") + ylab("Precipitation (mm/month)") +
-  ggtitle("Monthly variations in Capricho") +
   scale_color_viridis_c() +
-  scale_x_continuous(breaks = c(1, 5, 9, 13, 18, 22, 26, 31, 35, 40, 44, 48),
-                   labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+  xlab("") + ylab("Precipitation (mm/month)") +
+  scale_x_continuous(breaks = yday(as_date(paste0("2001-", 1:12, "-1"))),
+                     labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
 ```
 
 ### Year
 
 ```{r}
 data %>% 
-  group_by(time = floor_date(time, "year")) %>% 
-  summarise(pr = sum(m)) %>% 
-  ggplot(aes(time, pr)) +
+  group_by(date = round_date(date, "year")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  ggplot(aes(date, precipitation)) +
   geom_line() +
+  geom_point() +
   theme_bw() +
-  xlab("") + ylab("Precipitation (mm/year)") +
-  ggtitle("Yearly variations in Capricho") +
-  geom_smooth(col = "red")
+  xlab("") + ylab("Precipitation (mm/year)")
 ```
 
 ```{r}
 data %>% 
-  group_by(time = floor_date(time, "month")) %>% 
-  summarise(pr = sum(m)) %>% 
-  group_by(time = floor_date(time, "year")) %>% 
-  summarise(delta_pr = quantile(pr, 0.95) - quantile(pr, 0.05)) %>% 
-  ggplot(aes(time, delta_pr)) +
+  group_by(date = floor_date(date, "month")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  group_by(date = floor_date(date, "year")) %>% 
+  summarise(delta_precipitation = quantile(precipitation, 0.95) - quantile(precipitation, 0.05)) %>% 
+  ggplot(aes(date, delta_precipitation)) +
   geom_line() +
   theme_bw() +
   xlab("") + ylab("Yearly variations of monthly precipitation (mm/year)") +
   ggtitle("Yearly variability in Capricho") +
   geom_smooth(col = "red")
+```
+
+```{r tmfcpdata}
+#| include: false
+area <- st_read("data/capricho/capricho.shp", quiet=T)
+get_deforest_area <- function(year, tile = "SAM_ID47_N10_W80"){
+  tmf <- rast(
+    paste0("data/JRC_TMF_AnnualChange_v1_", 
+           tile,
+           "/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_", year, "_",
+           tile,
+           ".tif")) %>% crop(area) %>% 
+  mask(area)
+tmf <- as.numeric(tmf == 3)
+tmf <- tmf*cellSize(tmf, unit = 'km')
+  return(data.frame(year = year, area = sum(values(tmf), na.rm = T)))
+}
+deforest <- lapply(2000:2022, get_deforest_area) %>% 
+  bind_rows()
+```
+
+```{r}
+data %>% 
+  group_by(date = floor_date(date, "month")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  group_by(year = as.integer(year(date))) %>% 
+  summarise(delta_precipitation = quantile(precipitation, 0.95) - quantile(precipitation, 0.05)) %>% 
+  left_join(deforest) %>% 
+  ggplot(aes(area, delta_precipitation, col = year)) +
+  geom_point() +
+  theme_bw() +
+  geom_smooth(method = "lm") +
+  ggpubr::stat_cor() +
+  xlab("Cummulated deforested area (km2)") +
+  ylab("Yearly variations of monthly precipitation (mm/year)") +
+  scale_color_viridis_c()
+```
+
+### Dry season
+
+> The observed DSE is determined by the first date when the pentad mean rain rate changes from below to above the climatological annual mean rain rate of the same rainfall dataset during six out of eight pentads, and vice versa for the DSA ([19](https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r19)). This definition captures the rapid transition from a lower to higher rainfall regime associated with the DSE, and vice versa for the DSA. The DSE and DSA are not influenced by any bias of rainfall amount, as long as the temporal patterns of the rainfall variation are not affected. Similar definitions have been widely used in the literature ([18](https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r18), [19](https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r19), [23](https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r23)). For analysis of models, we modify our criterion to five out of eight pentads to best match the modeled DSE and DSA with observations. @fu2013
+
+```{r}
+pentads <- data %>% 
+  group_by(date = round_date(date, "5 days")) %>% 
+  summarise(precipitation = sum(precipitation)) %>% 
+  mutate(year = year(date)) %>% 
+  mutate(day = yday(date)) %>% 
+  group_by(year) %>% 
+  mutate(relative_precipitation = precipitation - mean(precipitation))
+ggplot(pentads, aes(day, relative_precipitation)) +
+  geom_line(aes(group = year, col = year)) +
+  theme_bw() +
+  geom_hline(yintercept = 0, col = "red") +
+  geom_vline(xintercept = yday(as_date(paste0("2001-03-26"))), col = "red") +
+  geom_vline(xintercept = yday(as_date(paste0("2001-07-26"))), col = "red") +
+  scale_color_viridis_c() +
+  xlab("") + ylab("Precipitation (mm/month)") +
+  scale_x_continuous(breaks = yday(as_date(paste0("2001-", 1:12, "-1"))),
+                     labels = c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"))
+```
+
+```{r}
+dsa <- pentads %>% 
+  mutate(positive = as.numeric(relative_precipitation > 0)) %>% 
+  mutate(height_pentads = zoo::rollsum(positive, 8, align = "left", fill = NA)) %>% 
+  filter(height_pentads >= 6) %>% 
+  group_by(year) %>% 
+  slice_min(day) %>% 
+  mutate(dsa = day) %>% 
+  select(year, dsa)
+dsl <- pentads %>% 
+  left_join(dsa) %>% 
+  group_by(year) %>% 
+  filter(day > dsa) %>% 
+  mutate(negative = as.numeric(relative_precipitation < 0)) %>% 
+  mutate(height_pentads = zoo::rollsum(negative, 8, align = "left", fill = NA)) %>% 
+  filter(height_pentads >= 6) %>% 
+  slice_min(day) %>% 
+  mutate(dse = day) %>% 
+  select(year, dsa, dse) %>% 
+  mutate(dsl = 365 + dsa - dse)
+dsl %>% 
+  gather(variable, value, -year) %>% 
+  ggplot(aes(year, value)) +
+  geom_point() +
+  facet_wrap(~ variable, scales = "free") +
+  theme_bw() +
+  geom_smooth(method = "lm") +
+  ggpubr::stat_cor() +
+  theme(legend.position = "bottom")
 ```
 
 ## Colombian Amazon

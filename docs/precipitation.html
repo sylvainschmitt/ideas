@@ -20,7 +20,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -164,10 +183,12 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#capricho" id="toc-capricho" class="nav-link active" data-scroll-target="#capricho">Capricho</a>
   <ul class="collapse">
+  <li><a href="#day" id="toc-day" class="nav-link" data-scroll-target="#day">Day</a></li>
   <li><a href="#pentad" id="toc-pentad" class="nav-link" data-scroll-target="#pentad">Pentad</a></li>
   <li><a href="#biweek" id="toc-biweek" class="nav-link" data-scroll-target="#biweek">Biweek</a></li>
   <li><a href="#month" id="toc-month" class="nav-link" data-scroll-target="#month">Month</a></li>
   <li><a href="#year" id="toc-year" class="nav-link" data-scroll-target="#year">Year</a></li>
+  <li><a href="#dry-season" id="toc-dry-season" class="nav-link" data-scroll-target="#dry-season">Dry season</a></li>
   </ul></li>
   <li><a href="#colombian-amazon" id="toc-colombian-amazon" class="nav-link" data-scroll-target="#colombian-amazon">Colombian Amazon</a>
   <ul class="collapse">
@@ -200,56 +221,90 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="capricho" class="level2">
 <h2 class="anchored" data-anchor-id="capricho">Capricho</h2>
-<p>We used CHIRPS data at 0.05-degree resolution with pentad (5-days) precipitation accumulation.</p>
-<section id="pentad" class="level3">
-<h3 class="anchored" data-anchor-id="pentad">Pentad</h3>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-2_3246cd71cb25c477e85c718685c6cfdf">
+<p>We used ERA5-Land data at 0.01-degree resolution with hourly precipitation aggregated to the day.</p>
+<section id="day" class="level3">
+<h3 class="anchored" data-anchor-id="day">Day</h3>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-1_62722db9d0630f710e7d381ba1d58537">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-2_cc9aba861d77357b92b27b8aa87920c0">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-3_2393b2cfab02c4da7b1f58cfaad46e72">
+</section>
+<section id="pentad" class="level3">
+<h3 class="anchored" data-anchor-id="pentad">Pentad</h3>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-3_35c45f4339ccdf976242a828ac4d0ed8">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-4_ab1d61a8d4c1e70e6e66ce849ea0e952">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="biweek" class="level3">
 <h3 class="anchored" data-anchor-id="biweek">Biweek</h3>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-4_374679c2444216b2d57c6a74b59c4ade">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-5_5d0b4918fc926162c603eddd287c9cee">
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-5_c26404dabd4c6568faf016994db53889">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-6_4d50c653a9fe5e657fd40f03b7570282">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="month" class="level3">
 <h3 class="anchored" data-anchor-id="month">Month</h3>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-6_a331ce67da3c863565457be3615e3168">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-7_3681e8d3cf160e550107e4c624823561">
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-7_aa61a10a7869a934deb5600f04628863">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-8_09a3ccb1673258cc6510b328c7fb2d53">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
 <section id="year" class="level3">
 <h3 class="anchored" data-anchor-id="year">Year</h3>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-8_9cd417f0ee9a6d4030d2da288ade71a2">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-9_b2374402400cdb5e209e0452f63819a5">
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-9_00dd3876ef7fd7c03ef2306dc796e711">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-10_78897a1530cd4d72471120f9de14392c">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-11_365fa07cc27f6438b8adefa06bbe4c5c">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="dry-season" class="level3">
+<h3 class="anchored" data-anchor-id="dry-season">Dry season</h3>
+<blockquote class="blockquote">
+<p>The observed DSE is determined by the first date when the pentad mean rain rate changes from below to above the climatological annual mean rain rate of the same rainfall dataset during six out of eight pentads, and vice versa for the DSA (<a href="https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r19">19</a>). This definition captures the rapid transition from a lower to higher rainfall regime associated with the DSE, and vice versa for the DSA. The DSE and DSA are not influenced by any bias of rainfall amount, as long as the temporal patterns of the rainfall variation are not affected. Similar definitions have been widely used in the literature (<a href="https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r18">18</a>, <a href="https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r19">19</a>, <a href="https://www.pnas.org/doi/full/10.1073/pnas.1302584110#core-r23">23</a>). For analysis of models, we modify our criterion to five out of eight pentads to best match the modeled DSE and DSA with observations. <span class="citation" data-cites="fu2013">Fu et al. (<a href="references.html#ref-fu2013" role="doc-biblioref">2013</a>)</span></p>
+</blockquote>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-12_0fd2c61ed14183834454e378c921fdfb">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-13_3a77ece4594513586c181d2f53a5ccb9">
+<div class="cell-output-display">
+<p><img src="precipitation_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
@@ -340,6 +395,11 @@ ul.task-list li input[type="checkbox"] {
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-fu2013" class="csl-entry" role="listitem">
+Fu, Rong, Lei Yin, Wenhong Li, Paola A. Arias, Robert E. Dickinson, Lei Huang, Sudip Chakraborty, et al. 2013. <span>“Increased Dry-Season Length over Southern Amazonia in Recent Decades and Its Implication for Future Climate Projection.”</span> <em>Proceedings of the National Academy of Sciences</em> 110 (45): 18110–15. <a href="https://doi.org/10.1073/pnas.1302584110">https://doi.org/10.1073/pnas.1302584110</a>.
+</div>
+</div>
 </section>
 </section>
 
