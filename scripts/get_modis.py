@@ -6,26 +6,17 @@ sys.stderr = sys.stdout = log_file
 filein = snakemake.input[0]
 fileout = snakemake.output[0]
 
-# test
-filein = "results/limits/limits.shp"
-
 # libs
-import geopandas as gp
 import ee
 import xarray as xr
 import xesmf as xe
 import numpy as np
 
 # grid
-area = gp.read_file(filein)
-xmin = round(min(area.bounds.minx), 2)
-xmax = round(max(area.bounds.maxx), 2)
-ymin = round(min(area.bounds.miny), 2)
-ymax = round(max(area.bounds.maxy), 2)
 ds_out = xr.Dataset(
     {
-        "lat": (["lat"], np.arange(ymin, ymax, 0.01), {"units": "degrees_north"}),
-        "lon": (["lon"], np.arange(xmin, xmax, 0.01), {"units": "degrees_east"}),
+        "lat": (["lat"], np.arange(-10, 10, 0.25), {"units": "degrees_north"}),
+        "lon": (["lon"], np.arange(-80, -60, 0.25), {"units": "degrees_east"}),
     }
 )
 

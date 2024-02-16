@@ -6,7 +6,7 @@ rm(list = ls()) ; invisible(gc()) ; set.seed(42)
 library(tidyverse)
 library(terra)
 library(sf)
-library(leaflet)
+library(spdep)
 theme_set(bayesplot::theme_default())
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
@@ -17,57 +17,59 @@ We used the Tropical Moist Forest (TMF) product from the European Joint Research
 
 ## Colombian Amazon
 
-We focused on pixels categorized as undisturbed forest in 2001 and deforested in 2022. We aggregated the deforestation information to 0.01-degree (\~1km) by calculating the deforested surface in $km^2$. Deforestation is more prevalent in the North-West deforestation front.
+We focused on pixels categorized as undisturbed forest in 2001 and deforested in 2022. We aggregated the deforestation information to 0.25-degree (\~25km, the size of Capricho territory) by calculating the deforested surface in $km^2$. Deforestation is more prevalent in the North-West deforestation front.
 
 ```{r tmfcadataprep}
 #| include: false
 #| eval: false
-temp_r <- rast("results/data/modis_indices.nc")
-area <- st_read("results/limits/limits.shp", quiet=T) %>% 
-  st_set_crs(crs(temp_r))
-prep_tmf <- function(tile){
-  tmf_0 <- rast(
+tiles <- c("SAM_ID28_N0_W80", "SAM_ID29_N0_W70", "SAM_ID47_N10_W80", "SAM_ID48_N10_W70")
+tmf_0 <- lapply(tiles, function(tile)
+  rast(
     paste0("data/JRC_TMF_AnnualChange_v1_", 
            tile,
            "/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2000_",
            tile,
-           ".tif")) %>% crop(area)
-    msk <- ifel(tmf_0 != 1, NA, 1)
-    tmf_1 <- rast(
+           ".tif")))
+tmf_0 <- do.call(mosaic, tmf_0)
+forest_0 <- (as.numeric(tmf_0 == 1) * cellSize(tmf_0, unit = 'km'))
+msk_forest <- ifel(forest_0 == 0, NA, 1)
+forest_0 <- aggregate(forest_0,
+                      fact=res(temp_r)[1]/res(tmf_0)[1], 
+                      fun = "sum")
+cover_0 <- forest_0 / cellSize(forest_0, unit = 'km') * 100
+msk_cover <- ifel(cover_0 < 50, NA, 1)
+tmf_1 <- lapply(tiles, function(tile)
+  rast(
     paste0("data/JRC_TMF_AnnualChange_v1_", 
            tile,
            "/forobs/products/tmf_v1/AnnualChange/JRC_TMF_AnnualChange_v1_2022_",
            tile,
-           ".tif")) %>% crop(area) %>% mask(msk)
-    tmf_1 <- as.factor(ifel(tmf_1 %in% 1:3, tmf_1, NA))
-    deforest <- as.numeric(tmf_1 == 3) %>% 
-      aggregate(37, method = "mean")%>% 
-      resample(temp_r)
-    writeRaster(deforest, paste0("results/tmp/tmf_", tile, "_deforested.tif"))
-}
-lapply(c("SAM_ID28_N0_W80",
-         "SAM_ID29_N0_W70",
-         "SAM_ID47_N10_W80",
-         "SAM_ID48_N10_W70"),
-       prep_tmf)
-deforest <- lapply(list.files("results/tmp/", pattern = "deforest", full.names = TRUE), rast) %>% 
-  lapply(function(r) r*cellSize(r, unit = 'km')) %>% 
-  lapply(function(r) ifel(r == 0, NA, r))
-deforest_all <- do.call(mosaic, deforest)
-names(deforest_all) <- "deforest"
-writeRaster(deforest_all, "results/data/tmf_deforested_2022_2000_amzaonia.tif")
+           ".tif")))
+tmf_1 <- do.call(mosaic, tmf_1)
+tmf_1 <- mask(tmf_1, msk_forest)
+deforest_1 <- (as.numeric(tmf_0 == 3) * cellSize(tmf_0, unit = 'km'))
+deforest_1 <- aggregate(deforest_1,
+                        fact=res(temp_r)[1]/res(tmf_0)[1], 
+                        fun = "sum") %>% mask(msk_cover)
+names(deforest_1) <- "deforest"
+writeRaster(deforest_1, "results/data/tmf_deforested_2022_2000_amzaon.tif")
 ```
 
 ```{r tmfcadata}
 #| include: false
-data <- rast("results/data/tmf_deforested_2022_2000_amzaonia.tif") %>% 
+data <- rast("results/data/tmf_deforested_2022_2000_amzaon.tif") %>% 
   as.data.frame(xy = TRUE) %>% 
-  na.omit()
+  na.omit() %>% 
+  filter(deforest > 1)
 ```
 
 ```{r tmfcadatafig}
+r <- rast("results/data/tmf_deforested_2022_2000_amzaon.tif")
+r <- ifel(r > 1, r, NA)
 ggplot() +
-  tidyterra::geom_spatraster(data = rast("results/data/tmf_deforested_2022_2000_amzaonia.tif")) +
+  tidyterra::geom_spatraster(data = r) +
+  geom_sf(data = st_read("data/capricho/capricho.shp", quiet = TRUE),
+          fill = NA, col = "red", linewidth = 1) +
   theme_bw() +
   scale_fill_viridis_c(expression(km^2), na.value = NA) +
   ggtitle("Deforestation", "2000-2022")
@@ -82,8 +84,7 @@ ggplot(data, aes(deforest)) +
 ```
 
 ```{r tmfcadatacor}
-data2 <- sample_n(data, 1000)
-cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$deforest,
+cor <- pgirmess::correlog(data.frame(data$x, data$y), data$deforest,
                    method = "Moran", nbclass = 30) %>% 
   as.data.frame()
 cor %>% 
@@ -93,6 +94,11 @@ cor %>%
   theme_bw() +
   xlab("Distance (km)") + ylab("Moran\'s I") +
   scale_x_log10()
+```
+
+```{r}
+nb <- dnearneigh(data[c("x", "y")], 0, 50, longlat = T)
+plot(nb, data[c("x", "y")])
 ```
 
 ## Capricho

@@ -6,7 +6,8 @@ rm(list = ls()) ; invisible(gc()) ; set.seed(42)
 library(tidyverse)
 library(terra)
 library(sf)
-library(bayesplot)
+library(spatialreg)
+library(spdep)
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
   cache = T, cache.lazy = F)
@@ -261,7 +262,8 @@ We used CHIRPS data downscaled at 0.01-degree resolution with pentad (5-days) pr
 #| include: false
 pr_ind <- rast("results/data/chirps_indices_amazon.nc")
 pr <- rast("results/data/chirps_anomalies_amazon.nc")
-deforest <- rast("results/data/tmf_deforested_2022_2000_amzaonia.tif")
+deforest <- rast("results/data/tmf_deforested_2022_2000_amzaon.tif") %>% 
+  resample(pr)
 data <- lapply(deforest, as.data.frame, xy = T) %>% 
   bind_rows() %>% 
   left_join(as.data.frame(pr, xy = TRUE)) %>% 
@@ -272,6 +274,8 @@ data <- lapply(deforest, as.data.frame, xy = T) %>%
 ```{r ca2022}
 ggplot() +
   tidyterra::geom_spatraster(data = pr_ind[[22]]) +
+  geom_sf(data = st_read("data/capricho/capricho.shp", quiet = TRUE),
+          fill = NA, col = "red", linewidth = 1.5) +
   theme_bw() +
   scale_fill_viridis_c("mm", na.value = NA) +
   ggtitle("Precipitaiton 2022")
@@ -280,8 +284,10 @@ ggplot() +
 ```{r caanom}
 ggplot() +
   tidyterra::geom_spatraster(data = pr) +
+  geom_sf(data = st_read("data/capricho/capricho.shp", quiet = TRUE),
+          fill = NA, col = "red", linewidth = 1.5) +
   theme_bw() +
-  scale_fill_viridis_c("°C", na.value = NA) +
+  scale_fill_viridis_c("mm", na.value = NA) +
   ggtitle("Precipitation anomalies", "2000:2002 vs 2020:2022")
 ```
 
@@ -290,15 +296,19 @@ ggplot() +
 Comparing deforestation surfaces to climate anomalies seems to indicate a decrease in precipitation with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.
 
 ```{r cacomp}
+step <- 5
+top <- 200
 data %>% 
-  mutate(deforest = cut(deforest, breaks = seq(0, 1.3, by = 0.1),
-                              labels = seq(0, 1.2, by = 0.1)+0.05)) %>% 
+  mutate(deforest = cut(deforest, breaks = seq(0, top, by = step),
+                               labels = seq(0, (top-step), by = step)+step/2)) %>% 
+  mutate(deforest = as.numeric(as.character(deforest))) %>% 
+  na.omit() %>% 
   ggplot(aes(deforest, precipitation)) +
-  geom_boxplot() +
+  geom_boxplot(aes(group = as.character(deforest))) +
   theme_bw() +
-  geom_smooth(aes(x = as.numeric(deforest))) +
+  geom_smooth() +
   xlab("Deforestation surface (km2, 2000-2022)") +
-  ylab("Yearly anomalies of precipitation")
+  ylab("January anomalies of mean temperature at surface")
 ```
 
 ### Linear regressions
@@ -306,15 +316,13 @@ data %>%
 Classic linear regression without accounting for spatial autocorrelation found a general and significant decrease in precipitation (-240mm/year) and a significant decrease in precipitation (-81mm/year) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.
 
 ```{r calm}
-reg <- lm(precipitation ~ 0 + intact + deforest, data)
+reg <- lm(precipitation ~ deforest, data)
 sjPlot::tab_model(reg)
 ```
 
 ```{r calmcor}
-data2 <- data
-data2$res <- residuals(reg) 
-data2 <- data2 %>% sample_n(1000)
-cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$res,
+data$res <- residuals(reg) 
+cor <- pgirmess::correlog(data.frame(data$x, data$y), data$res,
                    method = "Moran", nbclass = 30) %>% 
     as.data.frame()
 cor %>% 
@@ -332,32 +340,25 @@ cor %>%
 
 To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (spNNGP, Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes, see note below). We found only a small significant effect of deforestation on precipitation decrease accounting for spatial autocorrelation (-3mm/year).
 
-```{r srca}
-#| eval: false
-library(spNNGP)
-sr <- spNNGP(formula = precipitation ~ 0 + intact + deforest,
-                data = data,
-                coords = data[c("x", "y")], 
-                starting = list("phi" = 3 / 0.5, "sigma.sq" = 1, "tau.sq" = 1),
-                tuning = list("phi" = 0.2), 
-                priors = list("phi.Unif" = c(3 / 1, 3 / 0.1), 
-                              "sigma.sq.IG" = c(2, 1), "tau.sq.IG" = c(2, 1)), 
-                cov.model = "exponential",
-                n.samples = 2000, 
-                n.neighbors = 10, method = "latent", 
-                n.omp.threads = 20, n.report = 1000, fit.rep = TRUE,
-                sub.sample = list(start = 1000), return.neighbor.info = TRUE)
-save(sr, file = "save/pr.Rdata")
+```{r}
+nb <- dnearneigh(data[c("x", "y")], 0, 50, longlat = T)
+sr <- spautolm(precipitation ~ deforest, data, 
+               listw = nb2listw(nb, zero.policy = TRUE), family = "SAR")
+summary(sr)
 ```
 
-```{r srcaload}
-load("save/pr.Rdata")
-```
-
-```{r srcatrace}
-mcmc_trace(sr$p.beta.samples, n_warmup = 1000) 
-```
-
-```{r srcapost}
-mcmc_hist(sr$p.beta.samples[1001:2000,])
+```{r casrcor}
+data$res <- residuals(sr)
+cor <- pgirmess::correlog(data.frame(data$x, data$y), data$res,
+                   method = "Moran", nbclass = 30) %>% 
+    as.data.frame()
+cor %>% 
+  ggplot(aes(x = dist.class*100, y = coef)) + 
+  geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  xlab("Distance (km)") + ylab("Moran\'s I") +
+  scale_x_log10() +
+  ylim(-1, 1) +
+  ggtitle("Residuals spatial auto-correlation")
 ```

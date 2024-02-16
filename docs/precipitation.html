@@ -312,12 +312,12 @@ div.csl-indent {
 <section id="colombian-amazon" class="level2">
 <h2 class="anchored" data-anchor-id="colombian-amazon">Colombian Amazon</h2>
 <p>We used CHIRPS data downscaled at 0.01-degree resolution with pentad (5-days) precipitation accumulation. Yearly precipitation changes were then calculated by computing the monthly means over two periods at the end (2020 to 2022) and start (2000 to 2002) of the study period. Using 3-y averages reduces the influences of climate variability.</p>
-<div class="cell" data-hash="precipitation_cache/html/ca2022_d557d15452899e3a07a050ae486e482b">
+<div class="cell" data-hash="precipitation_cache/html/ca2022_0ca20928a516c97f0361cb0269982c88">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/ca2022-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/caanom_996fdb97834f17dbe5d444fe9f945f5c">
+<div class="cell" data-hash="precipitation_cache/html/caanom_9863fa84976495335cf4a11cd5eaf3be">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/caanom-1.png" class="img-fluid" width="768"></p>
 </div>
@@ -325,7 +325,7 @@ div.csl-indent {
 <section id="comparisons" class="level3">
 <h3 class="anchored" data-anchor-id="comparisons">Comparisons</h3>
 <p>Comparing deforestation surfaces to climate anomalies seems to indicate a decrease in precipitation with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.</p>
-<div class="cell" data-hash="precipitation_cache/html/cacomp_0ee66b8e8e46198d812701176ad40b7d">
+<div class="cell" data-hash="precipitation_cache/html/cacomp_61f5e22062be546a1502f4a4694d1e25">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/cacomp-1.png" class="img-fluid" width="768"></p>
 </div>
@@ -334,7 +334,7 @@ div.csl-indent {
 <section id="linear-regressions" class="level3">
 <h3 class="anchored" data-anchor-id="linear-regressions">Linear regressions</h3>
 <p>Classic linear regression without accounting for spatial autocorrelation found a general and significant decrease in precipitation (-240mm/year) and a significant decrease in precipitation (-81mm/year) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.</p>
-<div class="cell" data-hash="precipitation_cache/html/calm_ebf2f3c8e091797b7dce899844ae4be9">
+<div class="cell" data-hash="precipitation_cache/html/calm_06956c080dc1abe69d0528f9c77f6109">
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
 <tbody>
@@ -349,24 +349,24 @@ div.csl-indent {
 <td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">intact</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-239.77</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-243.01&nbsp;–&nbsp;-236.54</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">67.94</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">57.98&nbsp;–&nbsp;77.91</td>
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">deforest</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-80.92</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-103.95&nbsp;–&nbsp;-57.88</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.88</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.55&nbsp;–&nbsp;-0.21</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.010</strong></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">14050</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">4481</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.634 / 0.634</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.001 / 0.001</td>
 </tr>
 </tbody>
 </table>
@@ -374,7 +374,7 @@ div.csl-indent {
 
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/calmcor_23aa5787cca9c6cf71b4e0f3c3a7c541">
+<div class="cell" data-hash="precipitation_cache/html/calmcor_c1a91c8ed95fcedc05a266b8eb7579aa">
 <div class="cell-output-display">
 <p><img src="precipitation_files/figure-html/calmcor-1.png" class="img-fluid" width="768"></p>
 </div>
@@ -383,14 +383,35 @@ div.csl-indent {
 <section id="spatial-regressions" class="level3">
 <h3 class="anchored" data-anchor-id="spatial-regressions">Spatial regressions</h3>
 <p>To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (spNNGP, Gaussian univariate Bayesian spatial regression models using Nearest Neighbor Gaussian Processes, see note below). We found only a small significant effect of deforestation on precipitation decrease accounting for spatial autocorrelation (-3mm/year).</p>
-<div class="cell" data-hash="precipitation_cache/html/srcatrace_f661c151d8f546812270fbe9372fd225">
-<div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/srcatrace-1.png" class="img-fluid" width="768"></p>
+<div class="cell" data-hash="precipitation_cache/html/unnamed-chunk-14_169a3fc77d7cdc29ea9cd436ee41cde3">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call: 
+spautolm(formula = precipitation ~ deforest, data = data, listw = nb2listw(nb, 
+    zero.policy = TRUE), family = "SAR")
+
+Residuals:
+        Min          1Q      Median          3Q         Max 
+-615.243071   -3.005002   -0.023922    2.641979  546.114196 
+
+Coefficients: 
+             Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) 34.527671  32.452020  1.0640   0.2873
+deforest     0.095548   0.088000  1.0858   0.2776
+
+Lambda: 0.99671 LR test value: 18771 p-value: &lt; 2.22e-16 
+Numerical Hessian standard error of lambda: 0.00074369 
+
+Log likelihood: -22776.46 
+ML residual variance (sigma squared): 1103.4, (sigma: 33.218)
+Number of observations: 4481 
+Number of parameters estimated: 4 
+AIC: 45561</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="precipitation_cache/html/srcapost_8b697c7c6d3686523246e41857ff9ae7">
+<div class="cell" data-hash="precipitation_cache/html/casrcor_3c86da870ce3433f55e226dfa0d11644">
 <div class="cell-output-display">
-<p><img src="precipitation_files/figure-html/srcapost-1.png" class="img-fluid" width="768"></p>
+<p><img src="precipitation_files/figure-html/casrcor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 
