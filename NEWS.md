@@ -1,3 +1,4 @@
+-   ideas 0.1.0.9015: french summary
 -   ideas 0.1.0.9014: finally results!
 -   ideas 0.1.0.9013: capricho pp from era with dsl
 -   ideas 0.1.0.9012: cleaned book and script + capricho pr vars
