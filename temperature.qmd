@@ -12,13 +12,14 @@ theme_set(bayesplot::theme_default())
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
   cache = T, cache.lazy = F)
+temp_pal <- c("#053061", "#f7f7f7", "#67001f")
 ```
 
 ```{r data}
 #| include: false
-tas_ind <- rast("results/data/modis_indices_amazon.nc")
-tas <- rast("results/data/modis_anomalies_amazon.nc")
-deforest <- rast("results/data/tmf_deforested_2022_2000_amzaon.tif") %>% 
+tas_ind <- rast("results/data/modis_indices.nc")
+tas <- rast("results/data/modis_anomalies.nc")
+deforest <- rast("results/data/tmf_deforested_2022_2000.tif") %>% 
   resample(tas)
 data <- as.data.frame(deforest, xy = T) %>% 
   left_join(as.data.frame(tas, xy = TRUE)) %>% 
@@ -27,53 +28,39 @@ data <- as.data.frame(deforest, xy = T) %>%
   filter(deforest > 1)
 ```
 
-Following @butt2023, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed variations in mean temperature (tas). Monthly or seasonal indices could be used at a later stage, but we must be wary of seasonal variations across space. Daily extrema could also be used.
+## Amazon (NW)
 
-```{r yearly}
-tas_ind %>% 
-  as.data.frame() %>% 
-  gather(varyear, value) %>% 
-  group_by(varyear) %>% 
-  summarise(l = quantile(value, 0.025, na.rm = TRUE), 
-            m = mean(value, na.rm = TRUE), 
-            h = quantile(value, 0.975, na.rm = TRUE)) %>% 
-  separate(varyear, c("variable", "year"), "_year=", convert = T) %>% 
-  ggplot(aes(year, m, col = variable, fill = variable)) +
-  geom_ribbon(aes(ymin = l, ymax = h), col = NA, alpha = 0.2) +
-  geom_line() +
-  geom_point() +
-  theme_bw() +
-  theme(axis.title = element_blank()) +
-  geom_vline(xintercept = c(2001, 2003, 2020, 2022))
-```
+Following @butt2023, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data up-scaled at 0.05-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with the driest month computed independently for each cell and each year based on CHIRPS data (see precipitation section). Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2020 to 2022) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed variations in mean temperature. Monthly or seasonal indices could be used at a later stage, but we must also include seasonal variations across space. Daily extrema could also be used.
 
 ```{r ca2022}
 ggplot() +
-  tidyterra::geom_spatraster(data = tas_ind[[22]]) +
+  tidyterra::geom_spatraster(data = tas_ind) +
   geom_sf(data = st_read("data/capricho/capricho.shp", quiet = TRUE),
           fill = NA, col = "red", linewidth = 1) +
   theme_bw() +
-  scale_fill_viridis_c("°C", na.value = NA) +
-  ggtitle("Temperature 2022")
+  scale_fill_gradient2(low = temp_pal[1], mid = temp_pal[2], 
+                       high = temp_pal[3], midpoint = 30, "°C", na.value = NA) +
+  ggtitle("Mean temperature of dryest month in 2022")
 ```
 
 ```{r caanom}
 ggplot() +
   tidyterra::geom_spatraster(data = tas) +
   geom_sf(data = st_read("data/capricho/capricho.shp", quiet = TRUE),
-          fill = NA, col = "red", linewidth = 1) +
+          fill = NA, col = "black", linewidth = 0.8) +
   theme_bw() +
-  scale_fill_viridis_c("°C", na.value = NA) +
-  ggtitle("Temperature anomalies", "2001:2003 vs 2000:2022")
+  scale_fill_gradient2(low = temp_pal[1], mid = temp_pal[2], 
+                       high = temp_pal[3], midpoint = 0, "°C", na.value = NA) +
+  ggtitle("Temperature anomalies of the dryest month", "2001:2003 vs 2000:2022")
 ```
 
-## Comparisons
+### Comparisons
 
 Comparing deforestation surfaces to climate anomalies seems to indicate an increase in temperature with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.
 
 ```{r cacomp}
-step <- 5
-top <- 100
+step <- 0.1
+top <- 10
 data %>% 
   mutate(deforest = cut(deforest, breaks = seq(0, top, by = step),
                                labels = seq(0, (top-step), by = step)+step/2)) %>% 
@@ -87,9 +74,9 @@ data %>%
   ylab("January anomalies of mean temperature at surface")
 ```
 
-## Linear regressions
+### Linear regressions
 
-Classic linear regression without accounting for spatial autocorrelation found a general and significant increase in temperature (+0.19°C) and a significant increase in temperature (+0.52°C) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.
+Classic linear regression without accounting for spatial autocorrelation found no general trend in temperature, but a significant increase in mean temperature of the dryest month (+0.23°C) per deforested $km^2$ in cells of ca. $25 km^2$. Inspecting models residuals revealed a significant spatial autocorrelation but below 0.2 up to several hundred of kilometres questioning the robustness of the results.
 
 ```{r calm}
 reg <- lm(tas ~ deforest, data)
@@ -97,10 +84,12 @@ sjPlot::tab_model(reg)
 ```
 
 ```{r calmcor}
-data$res <- residuals(reg)
-cor <- pgirmess::correlog(data.frame(data$x, data$y), data$res,
+data$res <- residuals(reg) 
+n <- 10^3
+data2 <- sample_n(data, n)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$deforest,
                    method = "Moran", nbclass = 30) %>% 
-    as.data.frame()
+  as.data.frame()
 cor %>% 
   ggplot(aes(x = dist.class*100, y = coef)) + 
   geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
@@ -112,22 +101,33 @@ cor %>%
   ggtitle("Residuals spatial auto-correlation")
 ```
 
-## Spatial regressions
+### Spatial regressions
 
-To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (CAR, conditional autoregression see note below). We found no significant effect of deforestation on temperature accounting for spatial autoccorelation.
+To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (CAR, conditional autoregression see note below). We confirmed a significant effect of deforestation on mean temperature increase in the dryest month (-0.023°C/km2).
+
+```{r sr}
+#| eval: false
+#| include: false
+nb <- dnearneigh(data[c("x", "y")], 0, 10, longlat = T)
+sr <- spautolm(tas ~ deforest, data, 
+               listw = nb2listw(nb, zero.policy = TRUE), family = "CAR")
+save(sr, file = "save/tas.Rdata")
+```
 
 ```{r}
-nb <- dnearneigh(data[c("x", "y")], 0, 50, longlat = T)
-sr <- spautolm(tas ~ deforest, data, 
-               listw = nb2listw(nb, zero.policy = TRUE), family = "SAR")
+load("save/tas.Rdata")
 summary(sr)
 ```
 
 ```{r casrcor}
+#| eval: false
+#| include: false
 data$res <- residuals(sr)
-cor <- pgirmess::correlog(data.frame(data$x, data$y), data$res,
+n <- 10^3
+data2 <- sample_n(data, n)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$deforest,
                    method = "Moran", nbclass = 30) %>% 
-    as.data.frame()
+  as.data.frame()
 cor %>% 
   ggplot(aes(x = dist.class*100, y = coef)) + 
   geom_point(aes(alpha = p.value < 0.01)) + geom_line() +
@@ -139,7 +139,7 @@ cor %>%
   ggtitle("Residuals spatial auto-correlation")
 ```
 
-## Spatial methods
+### Spatial methods
 
 We explored multiple tool and methods to account for spatial autocorrelation in the regression. Below are listed the different options and the rational of the choice.
 

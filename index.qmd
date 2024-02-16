@@ -1,6 +1,6 @@
 # Introduction {.unnumbered}
 
-My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red). We will work at two scales: Capricho & Colombian Amazon. Unfortunately, only two weather stations data are available for the Amazon on the daily data of the [Global Historical Climatology Network](https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily), and they are far away from our study regions (but could still be used for a bit of validation of remotely sensed products).
+My participation into the [IDEAS project](https://ur-forets-societes.cirad.fr/dans-le-monde/projets-de-recherche/ideas) - Investigación y Desarrollo para la Estabilización de la frontera Agropecuaria en Colombia. The aim is to build climate indices related to land use change in Capricho (red). We will work at two scales: Capricho & the North-West of the Amazon forest.
 
 ```{r setup}
 #| include: false
@@ -20,28 +20,19 @@ knitr::opts_chunk$set(
 capricho <- st_read("data/capricho/capricho.shp")
 guaviare <- st_read("results/area/Guaviare/Guaviare.shp") %>% 
   st_set_crs(crs(capricho))
-caqueta <- st_read("results/area/Caquetá/Caquetá.shp") %>% 
-  st_set_crs(crs(capricho))
-guainia <- st_read("results/area/Guainía/Guainía.shp") %>% 
-  st_set_crs(crs(capricho))
 amazonia <- st_read("data/Límite_de_la_Amazonia_colombiana._Escala _1 100.000/L%C3%ADmite_de_la_Amazonia_colombiana._Escala%3A_1%3A100.000.shp") %>% 
   st_transform(crs(capricho))
-stations <- read_table("data/ghcnd-stations.txt", 
-           col_names = c("station", "latitude", "longitude", "elevation", "state", "station")) %>% 
-  st_as_sf(coords = c('longitude', 'latitude'))%>% 
-  st_set_crs(crs(capricho)) %>% 
-  st_crop(amazonia)
+forest <-  rast("results/data/tmf_deforested_2022_2000.tif")
+forest_pal <- c("#48712d", "#e40400")
 ```
 
 ```{r amazonmap}
+
 ggplot() +
-  geom_sf(data = amazonia, aes(fill = "Colombian Amazon"), alpha = 0.5) +
-  geom_sf(data = capricho, aes(fill = "Capricho")) +
-  geom_sf(data = guaviare, aes(col = "Guiavare"), fill = NA, linewidth = 1.5) +
-  geom_sf(data = caqueta, aes(col = "Caquetá"), fill = NA, linewidth = 1.5) +
-  geom_sf(data = guainia, aes(col = "Guainía"), fill = NA, linewidth = 1.5) +
-  geom_sf_text(data = stations, aes(label = station_1), size = 4) +
-  theme_bw() +
-  scale_fill_manual("", values = c("red", "darkgreen")) +
-  scale_color_discrete("")
+  tidyterra::geom_spatraster(data = forest) +
+  scale_fill_gradient(low = forest_pal[1], high = forest_pal[2], expression(km^2), na.value = NA) +
+  geom_sf(data = amazonia, fill = NA, linewidth = 1.5) +
+  geom_sf(data = guaviare, fill = NA, linewidth = 1.5) +
+  geom_sf(data = capricho, fill = NA, linewidth = 1.5, col = "red") +
+  theme_bw()
 ```

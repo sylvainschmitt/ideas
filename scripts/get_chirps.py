@@ -17,8 +17,8 @@ import numpy as np
 # grid
 ds_out = xr.Dataset(
     {
-        "lat": (["lat"], np.arange(-10, 10, 0.25), {"units": "degrees_north"}),
-        "lon": (["lon"], np.arange(-80, -60, 0.25), {"units": "degrees_east"}),
+        "lat": (["lat"], np.arange(-10, 10, 0.05), {"units": "degrees_north"}),
+        "lon": (["lon"], np.arange(-80, -60, 0.05), {"units": "degrees_east"}),
     }
 )
 
@@ -36,10 +36,10 @@ ds = ds.transpose('time', 'lat', 'lon')
 ds = ds.groupby("time.year").sum()
 regridder = xe.Regridder(ds, ds_out, "bilinear")
 ds_r = regridder(ds, keep_attrs=True)
-ds_r.to_netcdf("results/data/chirps_indices_amazon.nc")
+ds_r.to_netcdf("results/data/chirps_indices.nc")
 
 # anomalies
 ds_anom = ds.sel(year=slice(2020, 2022)).mean("year") -  ds.sel(year=slice(2000, 2002)).mean("year")
 regridder = xe.Regridder(ds_anom, ds_out, "bilinear")
 ds_r = regridder(ds_anom, keep_attrs=True)
-ds_r.to_netcdf("results/data/chirps_anomalies_amazon.nc")
+ds_r.to_netcdf("results/data/chirps_anomalies.nc")

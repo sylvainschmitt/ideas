@@ -81,6 +81,8 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -181,10 +183,13 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#comparisons" id="toc-comparisons" class="nav-link active" data-scroll-target="#comparisons">Comparisons</a></li>
+  <li><a href="#amazon-nw" id="toc-amazon-nw" class="nav-link active" data-scroll-target="#amazon-nw">Amazon (NW)</a>
+  <ul class="collapse">
+  <li><a href="#comparisons" id="toc-comparisons" class="nav-link" data-scroll-target="#comparisons">Comparisons</a></li>
   <li><a href="#linear-regressions" id="toc-linear-regressions" class="nav-link" data-scroll-target="#linear-regressions">Linear regressions</a></li>
   <li><a href="#spatial-regressions" id="toc-spatial-regressions" class="nav-link" data-scroll-target="#spatial-regressions">Spatial regressions</a></li>
   <li><a href="#spatial-methods" id="toc-spatial-methods" class="nav-link" data-scroll-target="#spatial-methods">Spatial methods</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -208,35 +213,32 @@ div.csl-indent {
 
 </header>
 
-<p>Following <span class="citation" data-cites="butt2023">Butt et al. (<a href="references.html#ref-butt2023" role="doc-biblioref">2023</a>)</span>, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data at 0.01-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with January the driest month in Guiavare. Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2018 to 2020) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed variations in mean temperature (tas). Monthly or seasonal indices could be used at a later stage, but we must be wary of seasonal variations across space. Daily extrema could also be used.</p>
-<div class="cell" data-hash="temperature_cache/html/yearly_5beb079d50627d61ac51b71e17f65cd7">
-<div class="cell-output-display">
-<p><img src="temperature_files/figure-html/yearly-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
-<div class="cell" data-hash="temperature_cache/html/ca2022_cc77085fea0172fc6a5e0587c60d5107">
+<section id="amazon-nw" class="level2">
+<h2 class="anchored" data-anchor-id="amazon-nw">Amazon (NW)</h2>
+<p>Following <span class="citation" data-cites="butt2023">Butt et al. (<a href="references.html#ref-butt2023" role="doc-biblioref">2023</a>)</span>, we used land surface temperature (LST) data from MOD11A2 version 6 MODIS 8-d LST data up-scaled at 0.05-degree resolution grid. We excluded data where the estimated emissivity error was greater than 0.02 and where the LST error was greater than 1 K. Extensive cloud cover can reduce the spatial and temporal availability of satellite data. For this reason, we focus our analysis on the dry season when there is less cloud cover. We thus worked with the driest month computed independently for each cell and each year based on CHIRPS data (see precipitation section). Dry season surface temperature changes were then calculated by comparing temperature of the driest month for two periods at the end (2020 to 2022) and start (2001 to 2003) of the study period. Using 3-y averages reduces the influences of climate variability. We computed variations in mean temperature. Monthly or seasonal indices could be used at a later stage, but we must also include seasonal variations across space. Daily extrema could also be used.</p>
+<div class="cell" data-hash="temperature_cache/html/ca2022_4a6841225446f376e2968fe2bc3ee218">
 <div class="cell-output-display">
 <p><img src="temperature_files/figure-html/ca2022-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<div class="cell" data-hash="temperature_cache/html/caanom_6301b8c97bceb8d65a94861958a0a49f">
+<div class="cell" data-hash="temperature_cache/html/caanom_c92a01ae736bb540fd8af0f080466db8">
 <div class="cell-output-display">
 <p><img src="temperature_files/figure-html/caanom-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<section id="comparisons" class="level2">
-<h2 class="anchored" data-anchor-id="comparisons">Comparisons</h2>
+<section id="comparisons" class="level3">
+<h3 class="anchored" data-anchor-id="comparisons">Comparisons</h3>
 <p>Comparing deforestation surfaces to climate anomalies seems to indicate an increase in temperature with increasing deforestation surfaces. But caution should be taken because of possible spatial proximity between deforested pixels that could confound with the spatial structure of climate anomalies.</p>
-<div class="cell" data-hash="temperature_cache/html/cacomp_fd86822b0eccd82fb8a02798846dd238">
+<div class="cell" data-hash="temperature_cache/html/cacomp_a767a45548b5474b7848acf6e2c51aeb">
 <div class="cell-output-display">
 <p><img src="temperature_files/figure-html/cacomp-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="linear-regressions" class="level2">
-<h2 class="anchored" data-anchor-id="linear-regressions">Linear regressions</h2>
-<p>Classic linear regression without accounting for spatial autocorrelation found a general and significant increase in temperature (+0.19°C) and a significant increase in temperature (+0.52°C) with deforestation. However, inspecting models residuals revealed a significant spatial autocorrelation of model errors up to several hundred of kilometres questioning the robustness of the results.</p>
-<div class="cell" data-hash="temperature_cache/html/calm_7ca80fdfd339ea7334757de93c188ab3">
+<section id="linear-regressions" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regressions">Linear regressions</h3>
+<p>Classic linear regression without accounting for spatial autocorrelation found no general trend in temperature, but a significant increase in mean temperature of the dryest month (+0.23°C) per deforested <span class="math inline">\(km^2\)</span> in cells of ca. <span class="math inline">\(25 km^2\)</span>. Inspecting models residuals revealed a significant spatial autocorrelation but below 0.2 up to several hundred of kilometres questioning the robustness of the results.</p>
+<div class="cell" data-hash="temperature_cache/html/calm_7ede74e10072d51f4b0763899d2f3c1c">
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
 <tbody>
@@ -252,23 +254,23 @@ div.csl-indent {
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.02</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.02&nbsp;–&nbsp;0.07</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.310</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.03</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.11&nbsp;–&nbsp;0.05</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.402</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top;">deforest</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.00</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.00&nbsp;–&nbsp;0.00</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.645</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.23</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.20&nbsp;–&nbsp;0.26</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">1531</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">3851</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.000 / -0.001</td>
+<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.072 / 0.072</td>
 </tr>
 </tbody>
 </table>
@@ -276,48 +278,43 @@ div.csl-indent {
 
 </div>
 </div>
-<div class="cell" data-hash="temperature_cache/html/calmcor_acd54cab4d5b88bb8284951962038ae9">
+<div class="cell" data-hash="temperature_cache/html/calmcor_f8ef31969b2ec0d5153e24562b082d4a">
 <div class="cell-output-display">
 <p><img src="temperature_files/figure-html/calmcor-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
-<section id="spatial-regressions" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-regressions">Spatial regressions</h2>
-<p>To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (CAR, conditional autoregression see note below). We found no significant effect of deforestation on temperature accounting for spatial autoccorelation.</p>
-<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-1_e5d058d57a606cb92957f867f5fbd89f">
+<section id="spatial-regressions" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-regressions">Spatial regressions</h3>
+<p>To account for spatial autocorrelation, we took advantage of a method including spatial autocorrelation in model error (CAR, conditional autoregression see note below). We confirmed a significant effect of deforestation on mean temperature increase in the dryest month (-0.023°C/km2).</p>
+<div class="cell" data-hash="temperature_cache/html/unnamed-chunk-1_69db7dbe6d61278199c2f19578e1e2f5">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call: spautolm(formula = tas ~ deforest, data = data, listw = nb2listw(nb, 
-    zero.policy = TRUE), family = "SAR")
+    zero.policy = TRUE), family = "CAR")
 
 Residuals:
        Min         1Q     Median         3Q        Max 
--1.0248582 -0.0590541 -0.0013618  0.0518573  1.0870292 
+-5.5596947 -0.0224035  0.0022015  0.0282601  3.2751378 
 
 Coefficients: 
-               Estimate  Std. Error z value Pr(&gt;|z|)
-(Intercept)  0.11171187  0.04550053  2.4552  0.01408
-deforest    -0.00058857  0.00070441 -0.8356  0.40341
+             Estimate Std. Error z value  Pr(&gt;|z|)
+(Intercept) 0.1548713  0.0216839  7.1422 9.184e-13
+deforest    0.0238385  0.0055669  4.2822 1.850e-05
 
-Lambda: 0.96299 LR test value: 4110.5 p-value: &lt; 2.22e-16 
-Numerical Hessian standard error of lambda: 0.0037805 
+Lambda: 0.99622 LR test value: 9140.7 p-value: &lt; 2.22e-16 
+Numerical Hessian standard error of lambda: 0.00034108 
 
-Log likelihood: 378.4256 
-ML residual variance (sigma squared): 0.022884, (sigma: 0.15127)
-Number of observations: 1531 
+Log likelihood: -2154.892 
+ML residual variance (sigma squared): 0.10687, (sigma: 0.32691)
+Number of observations: 3851 
 Number of parameters estimated: 4 
-AIC: -748.85</code></pre>
-</div>
-</div>
-<div class="cell" data-hash="temperature_cache/html/casrcor_3e7dfa34b73267f0cb0a6db07197b741">
-<div class="cell-output-display">
-<p><img src="temperature_files/figure-html/casrcor-1.png" class="img-fluid" width="768"></p>
+AIC: 4317.8</code></pre>
 </div>
 </div>
 </section>
-<section id="spatial-methods" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-methods">Spatial methods</h2>
+<section id="spatial-methods" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-methods">Spatial methods</h3>
 <p>We explored multiple tool and methods to account for spatial autocorrelation in the regression. Below are listed the different options and the rational of the choice.</p>
 <ul>
 <li>spautolm from spatialreg based on neighbours of dnearneigh from spdep
@@ -352,6 +349,7 @@ AIC: -748.85</code></pre>
 Butt, Edward W., Jessica C. A. Baker, Francisco G. Silva Bezerra, Celso von Randow, Ana P. D. Aguiar, and Dominick V. Spracklen. 2023. <span>“Amazon Deforestation Causes Strong Regional Warming.”</span> <em>Proceedings of the National Academy of Sciences</em> 120 (45). <a href="https://doi.org/10.1073/pnas.2309123120">https://doi.org/10.1073/pnas.2309123120</a>.
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->

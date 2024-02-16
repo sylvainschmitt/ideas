@@ -11,6 +11,7 @@ theme_set(bayesplot::theme_default())
 knitr::opts_chunk$set(
   echo = F, message = F, warning = F, fig.height = 6, fig.width = 8,
   cache = T, cache.lazy = F)
+forest_pal <- c("#48712d", "white", "#e40400")
 ```
 
 We used the Tropical Moist Forest (TMF) product from the European Joint Research Centre (JRC) to asses forest surface evolution between 2000 and 2022 at 30-m and yearly resolutions.
@@ -22,6 +23,7 @@ We focused on pixels categorized as undisturbed forest in 2001 and deforested in
 ```{r tmfcadataprep}
 #| include: false
 #| eval: false
+temp_r <- rast("results/data/chirps_anomalies.nc")
 tiles <- c("SAM_ID28_N0_W80", "SAM_ID29_N0_W70", "SAM_ID47_N10_W80", "SAM_ID48_N10_W70")
 tmf_0 <- lapply(tiles, function(tile)
   rast(
@@ -52,26 +54,26 @@ deforest_1 <- aggregate(deforest_1,
                         fact=res(temp_r)[1]/res(tmf_0)[1], 
                         fun = "sum") %>% mask(msk_cover)
 names(deforest_1) <- "deforest"
-writeRaster(deforest_1, "results/data/tmf_deforested_2022_2000_amzaon.tif")
+writeRaster(deforest_1, "results/data/tmf_deforested_2022_2000.tif")
 ```
 
 ```{r tmfcadata}
 #| include: false
-data <- rast("results/data/tmf_deforested_2022_2000_amzaon.tif") %>% 
+data <- rast("results/data/tmf_deforested_2022_2000.tif") %>% 
   as.data.frame(xy = TRUE) %>% 
   na.omit() %>% 
   filter(deforest > 1)
 ```
 
 ```{r tmfcadatafig}
-r <- rast("results/data/tmf_deforested_2022_2000_amzaon.tif")
+r <- rast("results/data/tmf_deforested_2022_2000.tif")
 r <- ifel(r > 1, r, NA)
 ggplot() +
   tidyterra::geom_spatraster(data = r) +
   geom_sf(data = st_read("data/capricho/capricho.shp", quiet = TRUE),
-          fill = NA, col = "red", linewidth = 1) +
+          fill = NA, col = "black", linewidth = .8) +
   theme_bw() +
-  scale_fill_viridis_c(expression(km^2), na.value = NA) +
+  scale_fill_gradient(low = forest_pal[2], high = forest_pal[3], expression(km^2), na.value = NA) +
   ggtitle("Deforestation", "2000-2022")
 ```
 
@@ -84,7 +86,9 @@ ggplot(data, aes(deforest)) +
 ```
 
 ```{r tmfcadatacor}
-cor <- pgirmess::correlog(data.frame(data$x, data$y), data$deforest,
+n <- 10^3
+data2 <- sample_n(data, n)
+cor <- pgirmess::correlog(data.frame(data2$x, data2$y), data2$deforest,
                    method = "Moran", nbclass = 30) %>% 
   as.data.frame()
 cor %>% 
@@ -97,8 +101,8 @@ cor %>%
 ```
 
 ```{r}
-nb <- dnearneigh(data[c("x", "y")], 0, 50, longlat = T)
-plot(nb, data[c("x", "y")])
+nb <- dnearneigh(data2[c("x", "y")], 0, 50, longlat = T)
+plot(nb, data2[c("x", "y")])
 ```
 
 ## Capricho
